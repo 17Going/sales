@@ -39,28 +39,6 @@ export const constantRouterMap = [
       name: 'dashboard',
       meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
     }]
-  },
-  {
-    path: '/documentation',
-    component: Layout,
-    redirect: '/documentation/index',
-    children: [{
-      path: 'index',
-      component: () => import('@/views/documentation/index'),
-      name: 'documentation',
-      meta: { title: 'documentation', icon: 'documentation', noCache: true }
-    }]
-  },
-  {
-    path: '/guide',
-    component: Layout,
-    redirect: '/guide/index',
-    children: [{
-      path: 'index',
-      component: () => import('@/views/guide/index'),
-      name: 'guide',
-      meta: { title: 'guide', icon: 'guide', noCache: true }
-    }]
   }
 ]
 
@@ -72,45 +50,54 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
-    path: '/permission',
+    path: '/organizational', // 企业管理路由
     component: Layout,
-    redirect: '/permission/index',
-    alwaysShow: true, // will always show the root menu
+    name: 'documentation',
+    redirect: 'noredirect',
     meta: {
-      title: 'permission',
-      icon: 'lock',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      title: 'documentation',
+      icon: 'component'
     },
     children: [{
-      path: 'page',
-      component: () => import('@/views/permission/page'),
-      name: 'pagePermission',
+      path: 'index', // 组织架构路由
+      component: () => import('@/views/documentation/index'),
+      name: 'organizational',
       meta: {
-        title: 'pagePermission',
-        roles: ['admin'] // or you can only set roles in sub nav
+        title: 'organizational',
+        icon: 'peoples'
       }
     }, {
-      path: 'directive',
-      component: () => import('@/views/permission/directive'),
-      name: 'directivePermission',
+      path: 'guide', // 权限组路由
+      component: () => import('@/views/guide/index'),
+      name: 'permissionGroup',
+      meta: { title: 'permissionGroup', icon: 'guide', noCache: true }
+    }, {
+      path: 'user',
+      component: () => import('@/views/permission/page'),
+      name: 'usetNnme',
       meta: {
-        title: 'directivePermission'
+        title: 'usetNnme',
+        icon: 'user'
+      }
+    }, {
+      path: 'position',
+      component: () => import('@/views/permission/directive'),
+      name: 'position',
+      meta: {
+        title: 'position',
+        icon: 'documentation'
         // if do not set roles, means: this page does not require permission
+      }
+    }, {
+      path: 'customerSupports',
+      component: () => import('@/views/svg-icons/index'),
+      name: 'customerSupports',
+      meta: {
+        title: 'customerSupports',
+        icon: 'eye'
       }
     }]
   },
-
-  {
-    path: '/icon',
-    component: Layout,
-    children: [{
-      path: 'index',
-      component: () => import('@/views/svg-icons/index'),
-      name: 'icons',
-      meta: { title: 'icons', icon: 'icon', noCache: true }
-    }]
-  },
-
   {
     path: '/components',
     component: Layout,
@@ -118,7 +105,7 @@ export const asyncRouterMap = [
     name: 'component-demo',
     meta: {
       title: 'components',
-      icon: 'component'
+      icon: 'people'
     },
     children: [
       { path: 'tinymce', component: () => import('@/views/components-demo/tinymce'), name: 'tinymce-demo', meta: { title: 'tinymce' }},
@@ -126,14 +113,14 @@ export const asyncRouterMap = [
       { path: 'json-editor', component: () => import('@/views/components-demo/jsonEditor'), name: 'jsonEditor-demo', meta: { title: 'jsonEditor' }},
       { path: 'splitpane', component: () => import('@/views/components-demo/splitpane'), name: 'splitpane-demo', meta: { title: 'splitPane' }},
       { path: 'avatar-upload', component: () => import('@/views/components-demo/avatarUpload'), name: 'avatarUpload-demo', meta: { title: 'avatarUpload' }},
-      { path: 'dropzone', component: () => import('@/views/components-demo/dropzone'), name: 'dropzone-demo', meta: { title: 'dropzone' }},
-      { path: 'sticky', component: () => import('@/views/components-demo/sticky'), name: 'sticky-demo', meta: { title: 'sticky' }},
-      { path: 'count-to', component: () => import('@/views/components-demo/countTo'), name: 'countTo-demo', meta: { title: 'countTo' }},
-      { path: 'mixin', component: () => import('@/views/components-demo/mixin'), name: 'componentMixin-demo', meta: { title: 'componentMixin' }},
-      { path: 'back-to-top', component: () => import('@/views/components-demo/backToTop'), name: 'backToTop-demo', meta: { title: 'backToTop' }},
-      { path: 'drag-dialog', component: () => import('@/views/components-demo/dragDialog'), name: 'dragDialog-demo', meta: { title: 'dragDialog' }},
-      { path: 'dnd-list', component: () => import('@/views/components-demo/dndList'), name: 'dndList-demo', meta: { title: 'dndList' }},
-      { path: 'drag-kanban', component: () => import('@/views/components-demo/dragKanban'), name: 'dragKanban-demo', meta: { title: 'dragKanban' }}
+      { path: 'dropzone', component: () => import('@/views/components-demo/dropzone'), name: 'dropzone-demo', meta: { title: 'dropzone' }}
+      // { path: 'sticky', component: () => import('@/views/components-demo/sticky'), name: 'sticky-demo', meta: { title: 'sticky' }},
+      // { path: 'count-to', component: () => import('@/views/components-demo/countTo'), name: 'countTo-demo', meta: { title: 'countTo' }},
+      // { path: 'mixin', component: () => import('@/views/components-demo/mixin'), name: 'componentMixin-demo', meta: { title: 'componentMixin' }},
+      // { path: 'back-to-top', component: () => import('@/views/components-demo/backToTop'), name: 'backToTop-demo', meta: { title: 'backToTop' }},
+      // { path: 'drag-dialog', component: () => import('@/views/components-demo/dragDialog'), name: 'dragDialog-demo', meta: { title: 'dragDialog' }},
+      // { path: 'dnd-list', component: () => import('@/views/components-demo/dndList'), name: 'dndList-demo', meta: { title: 'dndList' }},
+      // { path: 'drag-kanban', component: () => import('@/views/components-demo/dragKanban'), name: 'dragKanban-demo', meta: { title: 'dragKanban' }}
     ]
   },
 
