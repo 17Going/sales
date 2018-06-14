@@ -7,11 +7,15 @@
 </template>
 <script>
 import DropdownMenu from '@/components/Share/dropdownMenu'
+import { departmentCreate } from '@/api/management'
 
 export default {
   name: 'documentation',
   components: { DropdownMenu },
   data() {
+    departmentCreate({ name: 'abc' }).then(response => {
+      console.log(response)
+    })
     return {
       articleList: [
         { title: '基础篇', href: 'https://segmentfault.com/a/1190000009275424' },
