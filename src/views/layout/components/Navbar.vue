@@ -10,8 +10,8 @@
       <el-tooltip effect="dark" :content="$t('navbar.screenfull')" placement="bottom">
         <screenfull class="screenfull right-menu-item"></screenfull>
       </el-tooltip>
-
-      <lang-select class="international right-menu-item"></lang-select>
+      <!--delete by ligaoming 20180614 删除语言切换-->
+      <!--<lang-select class="international right-menu-item"></lang-select>-->
 
       <el-tooltip effect="dark" :content="$t('navbar.theme')" placement="bottom">
         <theme-picker class="theme-switch right-menu-item"></theme-picker>
@@ -28,11 +28,12 @@
               {{$t('navbar.dashboard')}}
             </el-dropdown-item>
           </router-link>
-          <a target='_blank' href="https://github.com/PanJiaChen/vue-element-admin/">
-            <el-dropdown-item>
-              {{$t('navbar.github')}}
-            </el-dropdown-item>
-          </a>
+          <!--delete by ligaoming 20180614 删除项目地址链接-->
+          <!--<a target='_blank' href="https://github.com/PanJiaChen/vue-element-admin/">-->
+            <!--<el-dropdown-item>-->
+              <!--{{$t('navbar.github')}}-->
+            <!--</el-dropdown-item>-->
+          <!--</a>-->
           <el-dropdown-item divided>
             <span @click="logout" style="display:block;">{{$t('navbar.logOut')}}</span>
           </el-dropdown-item>

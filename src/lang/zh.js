@@ -2,7 +2,7 @@ export default {
   route: {
     dashboard: '驾驶舱',
     introduction: '简述',
-    documentation: '企业管理',
+    management: '企业管理',
     organizational: '组织架构',
     permissionGroup: '权限组',
     usetNnme: '用户',

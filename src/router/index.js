@@ -50,30 +50,30 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
-    path: '/organizational', // 企业管理路由
+    path: '/management', // 企业管理路由
     component: Layout,
-    name: 'documentation',
+    name: 'management',
     redirect: 'noredirect',
     meta: {
-      title: 'documentation',
+      title: 'management',
       icon: 'component'
     },
     children: [{
-      path: 'index', // 组织架构路由
-      component: () => import('@/views/documentation/index'),
+      path: 'organizational', // 组织架构路由
+      component: () => import('@/views/management/organizational'),
       name: 'organizational',
       meta: {
         title: 'organizational',
         icon: 'peoples'
       }
     }, {
-      path: 'guide', // 权限组路由
-      component: () => import('@/views/guide/index'),
+      path: 'permissionGroup', // 权限组路由
+      component: () => import('@/views/management/permissionGroup'),
       name: 'permissionGroup',
       meta: { title: 'permissionGroup', icon: 'guide', noCache: true }
     }, {
       path: 'user',
-      component: () => import('@/views/permission/page'),
+      component: () => import('@/views/management/user'),
       name: 'usetNnme',
       meta: {
         title: 'usetNnme',
@@ -81,7 +81,7 @@ export const asyncRouterMap = [
       }
     }, {
       path: 'position',
-      component: () => import('@/views/permission/directive'),
+      component: () => import('@/views/management/position'),
       name: 'position',
       meta: {
         title: 'position',
@@ -90,7 +90,7 @@ export const asyncRouterMap = [
       }
     }, {
       path: 'customerSupports',
-      component: () => import('@/views/svg-icons/index'),
+      component: () => import('@/views/management/customerSupports'),
       name: 'customerSupports',
       meta: {
         title: 'customerSupports',

@@ -2,7 +2,7 @@ export default {
   route: {
     dashboard: 'Cockpit',
     introduction: 'Introduction',
-    documentation: 'Business Management',
+    management: 'Business Management',
     organizational: 'Organizational Structure',
     permissionGroup: 'Permission Group',
     usetNnme: 'User',
@@ -88,7 +88,7 @@ export default {
   },
   components: {
     documentation: 'Documentation',
-    tinymceTips: 'Rich text editor is a core part of management system, but at the same time is a place with lots of problems. In the process of selecting rich texts, I also walked a lot of detours. The common rich text editors in the market are basically used, and the finally chose Tinymce. See documentation for more detailed rich text editor comparisons and introductions.',
+    tinymceTips: 'Rich text editor is a core part of management system, but at the same time is a place with lots of problems. In the process of selecting rich texts, I also walked a lot of detours. The common rich text editors in the market are basically used, and the finally chose Tinymce. See management for more detailed rich text editor comparisons and introductions.',
     dropzoneTips: 'Because my business has special needs, and has to upload images to qiniu, so instead of a third party, I chose encapsulate it by myself. It is very simple, you can see the detail code in @/components/Dropzone.',
     stickyTips: 'when the page is scrolled to the preset position will be sticky on the top.',
     backToTopTips1: 'When the page is scrolled to the specified position, the Back to Top button appears in the lower right corner',
@@ -137,8 +137,8 @@ export default {
   },
   theme: {
     change: 'Theme change',
-    documentation: 'Theme documentation',
-    tips: 'Tips: It is different from the theme-pick on the navbar is two different skinning methods, each with different application scenarios. Refer to the documentation for details.'
+    documentation: 'Theme management',
+    tips: 'Tips: It is different from the theme-pick on the navbar is two different skinning methods, each with different application scenarios. Refer to the management for details.'
   },
   tagsView: {
     close: 'Close',

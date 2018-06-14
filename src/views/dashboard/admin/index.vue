@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard-editor-container">
-    <github-corner></github-corner>
+    <!--delete by ligaoming 20180614 删除项目地址链接-->
+    <!--<github-corner></github-corner>-->
 
     <panel-group @handleSetLineChartData="handleSetLineChartData"></panel-group>
 
