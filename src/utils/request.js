@@ -2,20 +2,27 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-// import qs from 'qs'
+import router from '../router'
+import qs from 'qs'
 
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.BASE_API, // api的base_url
-  timeout: 30000 // request timeout
+  responseType: 'json',
+  timeout: 30000, // request timeout 默认30秒
+  withCredentials: true, // 是否允许带cookie这些
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+  }
 })
 
 // request interceptor
 service.interceptors.request.use(config => {
   // Do something before request is sent
-  // if (config.method === 'post') {
-  //   config.params = qs.stringify(config.params)
-  // }
+  if (config.method === 'post') {
+    // qs.stringify(config.data)
+    // service.post(config.url, config.params)
+  }
   if (config.url.indexOf('api') === -1) {
     config.url = 'api' + config.url
   }
@@ -63,6 +70,10 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error)// for debug
+    // 404退出登录去
+    router.push({
+      path: '/login'
+    })
     Message({
       message: error.message,
       type: 'error',

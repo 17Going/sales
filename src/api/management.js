@@ -4,6 +4,6 @@ export function departmentCreate(query) {
   return request({
     url: '/department/create',
     method: 'post',
-    params: query
+    data: query
   })
 }
