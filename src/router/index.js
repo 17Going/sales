@@ -98,160 +98,310 @@ export const asyncRouterMap = [
       }
     }]
   },
-  {
-    path: '/components',
+  { // 客户
+    path: '/customer',
     component: Layout,
     redirect: 'noredirect',
-    name: 'component-demo',
+    name: 'customer',
     meta: {
-      title: 'components',
+      title: 'customer',
       icon: 'people'
     },
-    children: [
-      { path: 'tinymce', component: () => import('@/views/components-demo/tinymce'), name: 'tinymce-demo', meta: { title: 'tinymce' }},
-      { path: 'markdown', component: () => import('@/views/components-demo/markdown'), name: 'markdown-demo', meta: { title: 'markdown' }},
-      { path: 'json-editor', component: () => import('@/views/components-demo/jsonEditor'), name: 'jsonEditor-demo', meta: { title: 'jsonEditor' }},
-      { path: 'splitpane', component: () => import('@/views/components-demo/splitpane'), name: 'splitpane-demo', meta: { title: 'splitPane' }},
-      { path: 'avatar-upload', component: () => import('@/views/components-demo/avatarUpload'), name: 'avatarUpload-demo', meta: { title: 'avatarUpload' }},
-      { path: 'dropzone', component: () => import('@/views/components-demo/dropzone'), name: 'dropzone-demo', meta: { title: 'dropzone' }},
-      { path: 'sticky', component: () => import('@/views/components-demo/sticky'), name: 'sticky-demo', meta: { title: 'sticky' }},
-      { path: 'count-to', component: () => import('@/views/components-demo/countTo'), name: 'countTo-demo', meta: { title: 'countTo' }},
-      { path: 'mixin', component: () => import('@/views/components-demo/mixin'), name: 'componentMixin-demo', meta: { title: 'componentMixin' }},
-      { path: 'back-to-top', component: () => import('@/views/components-demo/backToTop'), name: 'backToTop-demo', meta: { title: 'backToTop' }},
-      { path: 'drag-dialog', component: () => import('@/views/components-demo/dragDialog'), name: 'dragDialog-demo', meta: { title: 'dragDialog' }},
-      { path: 'dnd-list', component: () => import('@/views/components-demo/dndList'), name: 'dndList-demo', meta: { title: 'dndList' }},
-      { path: 'drag-kanban', component: () => import('@/views/components-demo/dragKanban'), name: 'dragKanban-demo', meta: { title: 'dragKanban' }}
-    ]
+    children: [{ // 私海
+      path: 'privateSea', component: () => import('@/views/customer/privateSea'),
+      name: 'privateSea',
+      meta: {
+        title: 'privateSea'
+      }
+    }, { // 我的成单客户
+      path: 'MySingleCustomer',
+      component: () => import('@/views/customer/MySingleCustomer'),
+      name: 'MySingleCustomer',
+      meta: {
+        title: 'MySingleCustomer'
+      }
+    }, { // 新增客户
+      path: 'newCustomers',
+      component: () => import('@/views/customer/newCustomers'),
+      name: 'newCustomers',
+      meta: {
+        title: 'newCustomers'
+      }
+    }, { // 检索客户
+      path: 'retrievingCustomers',
+      component: () => import('@/views/customer/retrievingCustomers'),
+      name: 'retrievingCustomers',
+      meta: {
+        title: 'retrievingCustomers'
+      }
+    }, {
+      path: 'highSeas',
+      component: () => import('@/views/customer/highSeas'),
+      name: 'highSeas',
+      meta: {
+        title: 'highSeas'
+      }
+    }, {
+      path: 'openPool',
+      component: () => import('@/views/customer/openPool'),
+      name: 'openPool',
+      meta: {
+        title: 'openPool'
+      }
+    }]
   },
-
+  //  销售管理
   {
-    path: '/charts',
+    path: '/salesManagement',
     component: Layout,
     redirect: 'noredirect',
-    name: 'charts',
+    name: 'salesManagement',
     meta: {
       title: 'salesManagement',
       icon: 'chart'
     },
-    children: [
-      { path: 'keyboard', component: () => import('@/views/charts/keyboard'), name: 'keyboardChart', meta: { title: 'SubordinateCustomers', noCache: true }},
-      { path: 'line', component: () => import('@/views/charts/line'), name: 'lineChart', meta: { title: 'SubordinateSingleCustomer', noCache: true }},
-      { path: 'mixchart', component: () => import('@/views/charts/mixChart'), name: 'mixChart', meta: { title: 'Rationale', noCache: true }}
-    ]
-  },
-
-  {
-    path: '/tab',
-    component: Layout,
     children: [{
-      path: 'index',
-      component: () => import('@/views/tab/index'),
-      name: 'tab',
-      meta: { title: 'tab', icon: 'tab' }
+      path: 'subordinateCustomers',
+      component: () => import('@/views/salesManagement/subordinateCustomers'),
+      name: 'subordinateCustomers',
+      meta: {
+        title: 'SubordinateCustomers',
+        noCache: true
+      }
+    }, {
+      path: 'subordinateSingleCustomer',
+      component: () => import('@/views/salesManagement/subordinateSingleCustomer'),
+      name: 'subordinateSingleCustomer',
+      meta: {
+        title: 'SubordinateSingleCustomer',
+        noCache: true
+      }
+    }, {
+      path: 'rationale',
+      component: () => import('@/views/salesManagement/rationale'),
+      name: 'rationale',
+      meta: {
+        title: 'Rationale',
+        noCache: true
+      }
     }]
   },
-
   {
-    path: '/table',
+    path: '/business',
     component: Layout,
-    redirect: '/table/complex-table',
-    name: 'table',
+    redirect: 'noredirect',
+    name: 'business',
     meta: {
-      title: 'Table',
+      title: 'business',
+      icon: 'chart'
+    },
+    children: [{
+      path: 'returnDeclaration',
+      component: () => import('@/views/business/returnDeclaration'),
+      name: 'returnDeclaration',
+      meta: {
+        title: 'returnDeclaration',
+        noCache: true
+      }
+    }, {
+      path: 'reviewAndApproval',
+      component: () => import('@/views/business/reviewAndApproval'),
+      name: 'reviewAndApproval',
+      meta: {
+        title: 'reviewAndApproval',
+        noCache: true
+      }
+    }, {
+      path: 'reviewAndApprovalRecord',
+      component: () => import('@/views/business/reviewAndApprovalRecord'),
+      name: 'reviewAndApprovalRecord',
+      meta: {
+        title: 'reviewAndApprovalRecord',
+        noCache: true
+      }
+    }, {
+      path: 'contract',
+      component: () => import('@/views/business/contract'),
+      name: 'contract',
+      meta: {
+        title: 'contract',
+        noCache: true
+      }
+    }, {
+      path: 'contractApproval',
+      component: () => import('@/views/business/contractApproval'),
+      name: 'contractApproval',
+      meta: {
+        title: 'contractApproval',
+        noCache: true
+      }
+    }, {
+      path: 'contractApprovalRecord',
+      component: () => import('@/views/business/contractApprovalRecord'),
+      name: 'contractApprovalRecord',
+      meta: {
+        title: 'contractApprovalRecord',
+        noCache: true
+      }
+    }]
+  },
+  {
+    path: '/productList',
+    component: Layout,
+    children: [{
+      path: '',
+      component: () => import('@/views/productList/index'),
+      name: 'productList',
+      meta: {
+        title: 'productList',
+        icon: 'tab'
+      }
+    }]
+  },
+  // 企业设置
+  {
+    path: '/enterprise',
+    component: Layout,
+    redirect: '/enterprise/enterprise',
+    name: 'enterprise',
+    meta: {
+      title: 'enterprise',
       icon: 'table'
     },
     children: [
-      { path: 'dynamic-table', component: () => import('@/views/table/dynamicTable/index'), name: 'dynamicTable', meta: { title: 'dynamicTable' }},
-      { path: 'drag-table', component: () => import('@/views/table/dragTable'), name: 'dragTable', meta: { title: 'dragTable' }},
-      { path: 'inline-edit-table', component: () => import('@/views/table/inlineEditTable'), name: 'inlineEditTable', meta: { title: 'inlineEditTable' }},
-      { path: 'tree-table', component: () => import('@/views/table/treeTable/treeTable'), name: 'treeTableDemo', meta: { title: 'treeTable' }},
-      { path: 'custom-tree-table', component: () => import('@/views/table/treeTable/customTreeTable'), name: 'customTreeTableDemo', meta: { title: 'customTreeTable' }},
-      { path: 'complex-table', component: () => import('@/views/table/complexTable'), name: 'complexTable', meta: { title: 'complexTable' }}
+      {
+        path: 'customer',
+        component: () => import('@/views/enterprise/customer/index'),
+        name: 'customer',
+        meta: {
+          title: 'enterprise_customer'
+        }
+      },
+      {
+        path: 'followUpMethod',
+        component: () => import('@/views/enterprise/followUpMethod'),
+        name: 'followUpMethod',
+        meta: {
+          title: 'followUpMethod'
+        }
+      },
+      {
+        path: 'protection',
+        component: () => import('@/views/enterprise/protection'),
+        name: 'protection',
+        meta: {
+          title: 'protection'
+        }
+      },
+      {
+        path: 'contractSetting',
+        component: () => import('@/views/enterprise/contractSetting/contract'),
+        name: 'contractSetting',
+        meta: {
+          title: 'contractSetting'
+        }
+      },
+      {
+        path: 'productSetting',
+        component: () => import('@/views/enterprise/contractSetting/productSetting'),
+        name: 'productSetting',
+        meta: {
+          title: 'productSetting'
+        }
+      }
     ]
   },
 
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/list',
-    name: 'example',
-    meta: {
-      title: 'example',
-      icon: 'example'
-    },
-    children: [
-      { path: 'create', component: () => import('@/views/example/create'), name: 'createArticle', meta: { title: 'createArticle', icon: 'edit' }},
-      { path: 'edit/:id(\\d+)', component: () => import('@/views/example/edit'), name: 'editArticle', meta: { title: 'editArticle', noCache: true }, hidden: true },
-      { path: 'list', component: () => import('@/views/example/list'), name: 'articleList', meta: { title: 'articleList', icon: 'list' }}
-    ]
-  },
+  // {
+  //   path: '/example',
+  //   component: Layout,
+  //   redirect: '/example/list',
+  //   name: 'example',
+  //   meta: {
+  //     title: 'example',
+  //     icon: 'example'
+  //   },
+  //   children: [
+  //     { path: 'create', component: () => import('@/views/example/create'), name: 'createArticle', meta: { title: 'createArticle', icon: 'edit' }},
+  //     { path: 'edit/:id(\\d+)', component: () => import('@/views/example/edit'), name: 'editArticle', meta: { title: 'editArticle', noCache: true }, hidden: true },
+  //     { path: 'list', component: () => import('@/views/example/list'), name: 'articleList', meta: { title: 'articleList', icon: 'list' }}
+  //   ]
+  // },
+  //
+  // {
+  //   path: '/error',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   name: 'errorPages',
+  //   meta: {
+  //     title: 'errorPages',
+  //     icon: '404'
+  //   },
+  //   children: [
+  //     { path: '401', component: () => import('@/views/errorPage/401'), name: 'page401', meta: { title: 'page401', noCache: true }},
+  //     { path: '404', component: () => import('@/views/errorPage/404'), name: 'page404', meta: { title: 'page404', noCache: true }}
+  //   ]
+  // },
+  //
+  // {
+  //   path: '/error-log',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   children: [{ path: 'log', component: () => import('@/views/errorLog/index'), name: 'errorLog', meta: { title: 'errorLog', icon: 'bug' }}]
+  // },
+  //
+  // {
+  //   path: '/excel',
+  //   component: Layout,
+  //   redirect: '/excel/export-excel',
+  //   name: 'excel',
+  //   meta: {
+  //     title: 'excel',
+  //     icon: 'excel'
+  //   },
+  //   children: [
+  //     { path: 'export-excel', component: () => import('@/views/excel/exportExcel'), name: 'exportExcel', meta: { title: 'exportExcel' }},
+  //     { path: 'export-selected-excel', component: () => import('@/views/excel/selectExcel'), name: 'selectExcel', meta: { title: 'selectExcel' }},
+  //     { path: 'upload-excel', component: () => import('@/views/excel/uploadExcel'), name: 'uploadExcel', meta: { title: 'uploadExcel' }}
+  //   ]
+  // },
+  //
+  // {
+  //   path: '/zip',
+  //   component: Layout,
+  //   redirect: '/zip/download',
+  //   alwaysShow: true,
+  //   meta: { title: 'zip', icon: 'zip' },
+  //   children: [{ path: 'download', component: () => import('@/views/zip/index'), name: 'exportZip', meta: { title: 'exportZip' }}]
+  // },
 
   {
-    path: '/error',
+    path: '/querySetup',
     component: Layout,
     redirect: 'noredirect',
-    name: 'errorPages',
-    meta: {
-      title: 'errorPages',
-      icon: '404'
-    },
-    children: [
-      { path: '401', component: () => import('@/views/errorPage/401'), name: 'page401', meta: { title: 'page401', noCache: true }},
-      { path: '404', component: () => import('@/views/errorPage/404'), name: 'page404', meta: { title: 'page404', noCache: true }}
-    ]
+    children: [{
+      path: 'index',
+      component: () => import('@/views/querySetup/index'),
+      name: 'querySetup',
+      meta: {
+        title: 'querySetup',
+        icon: 'theme'
+      }
+    }]
   },
 
-  {
-    path: '/error-log',
-    component: Layout,
-    redirect: 'noredirect',
-    children: [{ path: 'log', component: () => import('@/views/errorLog/index'), name: 'errorLog', meta: { title: 'errorLog', icon: 'bug' }}]
-  },
-
-  {
-    path: '/excel',
-    component: Layout,
-    redirect: '/excel/export-excel',
-    name: 'excel',
-    meta: {
-      title: 'excel',
-      icon: 'excel'
-    },
-    children: [
-      { path: 'export-excel', component: () => import('@/views/excel/exportExcel'), name: 'exportExcel', meta: { title: 'exportExcel' }},
-      { path: 'export-selected-excel', component: () => import('@/views/excel/selectExcel'), name: 'selectExcel', meta: { title: 'selectExcel' }},
-      { path: 'upload-excel', component: () => import('@/views/excel/uploadExcel'), name: 'uploadExcel', meta: { title: 'uploadExcel' }}
-    ]
-  },
-
-  {
-    path: '/zip',
-    component: Layout,
-    redirect: '/zip/download',
-    alwaysShow: true,
-    meta: { title: 'zip', icon: 'zip' },
-    children: [{ path: 'download', component: () => import('@/views/zip/index'), name: 'exportZip', meta: { title: 'exportZip' }}]
-  },
-
-  {
-    path: '/theme',
-    component: Layout,
-    redirect: 'noredirect',
-    children: [{ path: 'index', component: () => import('@/views/theme/index'), name: 'theme', meta: { title: 'theme', icon: 'theme' }}]
-  },
-
-  {
-    path: '/clipboard',
-    component: Layout,
-    redirect: 'noredirect',
-    children: [{ path: 'index', component: () => import('@/views/clipboard/index'), name: 'clipboardDemo', meta: { title: 'clipboardDemo', icon: 'clipboard' }}]
-  },
-
-  {
-    path: '/i18n',
-    component: Layout,
-    children: [{ path: 'index', component: () => import('@/views/i18n-demo/index'), name: 'i18n', meta: { title: 'i18n', icon: 'international' }}]
-  },
+  // {
+  //   path: '/clipboard',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   children: [{ path: 'index', component: () => import('@/views/clipboard/index'), name: 'clipboardDemo', meta: { title: 'clipboardDemo', icon: 'clipboard' }}]
+  // },
+  //
+  // {
+  //   path: '/i18n',
+  //   component: Layout,
+  //   children: [{ path: 'index', component: () => import('@/views/i18n-demo/index'), name: 'i18n', meta: { title: 'i18n', icon: 'international' }}]
+  // },
 
   { path: '*', redirect: '/404', hidden: true }
 ]

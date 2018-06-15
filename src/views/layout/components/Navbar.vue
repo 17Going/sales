@@ -12,10 +12,10 @@
       </el-tooltip>
       <!--delete by ligaoming 20180614 删除语言切换-->
       <!--<lang-select class="international right-menu-item"></lang-select>-->
-
-      <el-tooltip effect="dark" :content="$t('navbar.theme')" placement="bottom">
-        <theme-picker class="theme-switch right-menu-item"></theme-picker>
-      </el-tooltip>
+      <!--delete by ligaoming 20180614 删除换肤-->
+      <!--<el-tooltip effect="dark" :content="$t('navbar.theme')" placement="bottom">-->
+        <!--<theme-picker class="theme-switch right-menu-item"></theme-picker>-->
+      <!--</el-tooltip>-->
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
