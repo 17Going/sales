@@ -41,6 +41,21 @@ export const asyncRouterMap = [
   {
     path: '',
     component: Layout,
+    redirect: 'noredirect',
+    children: [{
+      path: 'test',
+      component: () => import('@/components/Atemplates/testCompents'),
+      name: 'test',
+      meta: {
+        title: 'test',
+        icon: 'component',
+        noCache: true
+      }
+    }]
+  },
+  {
+    path: '',
+    component: Layout,
     redirect: 'dashboard',
     children: [{
       path: 'dashboard',
