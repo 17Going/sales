@@ -73,9 +73,18 @@ export const asyncRouterMap = [
       title: 'management',
       icon: 'component'
     },
-    children: [{
+    children: [/* {
       path: 'organizational', // 组织架构路由
       component: () => import('@/views/management/organizational'),
+      name: 'organizational',
+      meta: {
+        title: 'organizational',
+        icon: 'peoples'
+      }
+    }, */
+    {
+      path: 'organizational', // 组织架构路由
+      component: () => import('@/views/management/EOrganizationalS'),
       name: 'organizational',
       meta: {
         title: 'organizational',
