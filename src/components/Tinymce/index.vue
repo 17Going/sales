@@ -135,7 +135,7 @@ export default {
       })
     },
     destroyTinymce() {
-      if (window.tinymce.get(this.tinymceId)) {
+      if (window.tinymce && window.tinymce.get(this.tinymceId)) {
         window.tinymce.get(this.tinymceId).destroy()
       }
     },

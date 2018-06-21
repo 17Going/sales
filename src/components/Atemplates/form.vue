@@ -61,18 +61,16 @@ export default {
   data() {
     return {
       userForm: {},
-      serviceRules: []/**要跟form表单的prop属性对应上 */
+      serviceRules: [] /* *要跟form表单的prop属性对应上 */
     }
   },
   mounted() {
-   
+
   },
   beforeDestroy() {
-   
+
   },
-  methods: {
-  
-  }
+  methods: {}
 }
 </script>
 

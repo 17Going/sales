@@ -7,23 +7,23 @@ Vue.use(Router)
 import Layout from '@/views/layout/Layout'
 
 /** note: submenu only apppear when children.length>=1
-*   detail see  https://panjiachen.github.io/vue-element-admin-site/#/router-and-nav?id=sidebar
-**/
+ *   detail see  https://panjiachen.github.io/vue-element-admin-site/#/router-and-nav?id=sidebar
+ **/
 
 /**
-* hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
-* alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
-*                                if not set alwaysShow, only more than one route under the children
-*                                it will becomes nested mode, otherwise not show the root menu
-* redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
-* name:'router-name'             the name is used by <keep-alive> (must set!!!)
-* meta : {
+ * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
+ * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
+ *                                if not set alwaysShow, only more than one route under the children
+ *                                it will becomes nested mode, otherwise not show the root menu
+ * redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
+ * name:'router-name'             the name is used by <keep-alive> (must set!!!)
+ * meta : {
     roles: ['admin','editor']     will control the page roles (you can set multiple roles)
     title: 'title'               the name show in submenu and breadcrumb (recommend set)
     icon: 'svg-name'             the icon show in the sidebar,
     noCache: true                if true ,the page will no be cached(default is false)
   }
-**/
+ **/
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/authredirect', component: () => import('@/views/login/authredirect'), hidden: true },
@@ -33,26 +33,26 @@ export const constantRouterMap = [
 
 export default new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({y: 0}),
   routes: constantRouterMap
 })
 
 export const asyncRouterMap = [
-  {
-    path: '',
-    component: Layout,
-    redirect: 'noredirect',
-    children: [{
-      path: 'test',
-      component: () => import('@/components/Atemplates/testCompents'),
-      name: 'test',
-      meta: {
-        title: 'test',
-        icon: 'component',
-        noCache: true
-      }
-    }]
-  },
+  // {
+  //   path: '',
+  //   component: Layout,
+  //   redirect: 'noredirect',
+  //   children: [{
+  //     path: 'test',
+  //     component: () => import('@/components/Atemplates/testCompents'),
+  //     name: 'test',
+  //     meta: {
+  //       title: 'test',
+  //       icon: 'component',
+  //       noCache: true
+  //     }
+  //   }]
+  // },
   {
     path: '',
     component: Layout,
@@ -82,54 +82,45 @@ export const asyncRouterMap = [
         icon: 'peoples'
       }
     }, */
-    {
-      path: 'organizational', // 组织架构路由
-      component: () => import('@/views/management/EOrganizationalS'),
-      name: 'organizational',
-      meta: {
-        title: 'organizational',
-        icon: 'peoples'
-      },
-      children: [{
-        path: 'usertest',
-        component: () => import('@/views/management/usertest'),
+      {
+        path: 'organizational', // 组织架构路由
+        component: () => import('@/views/management/EOrganizationalS'),
+        name: 'organizational',
+        meta: {
+          title: 'organizational',
+          icon: 'peoples'
+        }
+      }, {
+        path: 'permissionGroup', // 权限组路由
+        component: () => import('@/views/management/permissionGroup'),
+        name: 'permissionGroup',
+        meta: { title: 'permissionGroup', icon: 'guide', noCache: true }
+      }, {
+        path: 'user',
+        component: () => import('@/views/management/user'),
         name: 'usetNnme',
         meta: {
           title: 'usetNnme',
           icon: 'user'
         }
+      }, {
+        path: 'position',
+        component: () => import('@/views/management/position'),
+        name: 'position',
+        meta: {
+          title: 'position',
+          icon: 'documentation'
+          // if do not set roles, means: this page does not require permission
+        }
+      }, {
+        path: 'customerSupports',
+        component: () => import('@/views/management/customerSupports'),
+        name: 'customerSupports',
+        meta: {
+          title: 'customerSupports',
+          icon: 'eye'
+        }
       }]
-    }, {
-      path: 'permissionGroup', // 权限组路由
-      component: () => import('@/views/management/permissionGroup'),
-      name: 'permissionGroup',
-      meta: { title: 'permissionGroup', icon: 'guide', noCache: true }
-    }, {
-      path: 'user',
-      component: () => import('@/views/management/user'),
-      name: 'usetNnme',
-      meta: {
-        title: 'usetNnme',
-        icon: 'user'
-      }
-    }, {
-      path: 'position',
-      component: () => import('@/views/management/position'),
-      name: 'position',
-      meta: {
-        title: 'position',
-        icon: 'documentation'
-        // if do not set roles, means: this page does not require permission
-      }
-    }, {
-      path: 'customerSupports',
-      component: () => import('@/views/management/customerSupports'),
-      name: 'customerSupports',
-      meta: {
-        title: 'customerSupports',
-        icon: 'eye'
-      }
-    }]
   },
   { // 客户
     path: '/customer',

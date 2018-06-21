@@ -2,13 +2,13 @@
   <div class="mixin-components-container">
     <el-row>
       <el-card class="box-card">
-     
-     
+
+
         <div style="margin-bottom:50px;">
           <el-col :span="4" class="text-center">
             <el-button class="pan-btn blue-btn" @click="activeHandler('Components')">Components</el-button>
           </el-col>
-          
+
           <el-col :span="4" class="text-center">
            <el-button class="pan-btn green-btn" @click="activeHandler('Table')">Table</el-button>
           </el-col>
@@ -16,7 +16,7 @@
           <el-col :span="4" class="text-center">
             <el-button class="pan-btn tiffany-btn" @click="activeHandler('Form')">Form</el-button>
           </el-col>
-         
+
         </div>
       </el-card>
     </el-row>
@@ -26,16 +26,16 @@
        <div v-show='isShowObj.Table'>
           <user-Table></user-Table>
       </div>
-   
+
 
   </div>
 </template>
 
 <script>
-import PanThumb from '@/components/PanThumb'
-import MdInput from '@/components/MDinput'
-import Mallki from '@/components/TextHoverEffect/Mallki'
-import DropdownMenu from '@/components/Share/dropdownMenu'
+// import PanThumb from '@/components/PanThumb'
+// import MdInput from '@/components/MDinput'
+// import Mallki from '@/components/TextHoverEffect/Mallki'
+// import DropdownMenu from '@/components/Share/dropdownMenu'
 import waves from '@/directive/waves/index.js' // 水波纹指令
 
 import userForm from '@/components/Atemplates/form'
@@ -52,19 +52,19 @@ export default {
   },
   data() {
     return {
-        isShowObj: {
-          Components: true,
-          Table:  false,
-          Form: false
-        }
+      isShowObj: {
+        Components: true,
+        Table: false,
+        Form: false
+      }
     }
   },
   methods: {
-    activeHandler(eName){
-      for (let key in this.isShowObj) {  
-         this.isShowObj[key] = false; 
-      } 
-      this.isShowObj[eName] = true;
+    activeHandler(eName) {
+      for (const key in this.isShowObj) {
+        this.isShowObj[key] = false
+      }
+      this.isShowObj[eName] = true
     }
   }
 }
