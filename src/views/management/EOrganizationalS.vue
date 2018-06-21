@@ -11,15 +11,17 @@
                <el-tree :data="EOSData" node-key="id"
                     default-expand-all :expand-on-click-node="false">
                     <span class="custom-tree-node" slot-scope="{ node, data }">
-                      <span @mouseover="asideNodeOver" @mouseout="asideNodeOut">{{ node.label }}</span>
-                      <span v-show="true">
-                        <el-button type="text" size="mini" @click="() => append(data)">[添加部门]</el-button>
-                        <el-button type="text" size="mini" @click="() => append(data)">[修改部门]</el-button>
-                        <el-button type="text" size="mini" @click="() => append(data)">[移动部门]</el-button>
-                        <el-button type="text" size="mini" @click="() => append(data)">[删除部门]</el-button>
-                      </span>
+                        <span @mouseover="asideNodeOver(data)" @mouseout="asideNodeOut(data)" >{{ data.label }}
+                          <span  v-show="data.isShowOpera" >
+                            <el-button type="text" size="mini" @click="() => append(data)">[添加部门]</el-button>
+                            <el-button type="text" size="mini" @click="() => append(data)">[修改部门]</el-button>
+                            <el-button type="text" size="mini" @click="() => append(data)">[移动部门]</el-button>
+                            <el-button type="text" size="mini" @click="() => append(data)">[删除部门]</el-button>
+                          </span>
+                        </span>
                     </span>
                   </el-tree>
+                  <el-button type="text" size="mini" @click="clickFun()">[删除部门]</el-button>
           </el-aside>
            </div>
           <el-main>
@@ -69,8 +71,8 @@ export default {
     departmentCreate({ name: 'abc' }).then(response => {
       console.log(response)
     })
+
     return {
-      isShowOpera: false,
       EOSData: JSON.parse(JSON.stringify(data)),
       articleList: [
         { title: '基础篇', href: 'https://segmentfault.com/a/1190000009275424' },
@@ -83,11 +85,15 @@ export default {
     }
   },
   methods: {
-    asideNodeOver(){
-      this.isShowOpera = false;
+    asideNodeOver(obj){
+      window.yxy = this.EOSData;
+      this.$set(obj,"isShowOpera", true);
     },
-    asideNodeOut(){
-      this.isShowOpera = true;
+    asideNodeOut(obj){
+      this.$set(obj,"isShowOpera", false);
+    },
+    clickFun(){
+      this.$router.replace('organizational/usertest');
     }
   }
 }
