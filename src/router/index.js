@@ -89,7 +89,16 @@ export const asyncRouterMap = [
         meta: {
           title: 'organizational',
           icon: 'peoples'
-        }
+        },
+        children: [{
+          path: 'user',
+          component: () => import('@/views/management/usertest'),
+          name: 'usetNnme',
+          meta: {
+            title: 'usetNnme',
+            icon: 'user'
+          }
+        }]
       }, {
         path: 'permissionGroup', // 权限组路由
         component: () => import('@/views/management/permissionGroup'),
