@@ -1,6 +1,6 @@
 export default {
   route: {
-    //测试组件
+    // 测试组件
     test: '公共组件',
     dashboard: '驾驶舱',
     // begin 企业管理

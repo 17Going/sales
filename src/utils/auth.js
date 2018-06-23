@@ -43,7 +43,7 @@ const authToken = {
   },
 
   // 设置登录状态
-  setLoginStatus: function(){
+  setLoginStatus: function() {
     // 设置超时登录时间，在该时间范围内没有任何请求操作则自动删除
     var maxAge = new Date(new Date().getTime() + 30 * 60 * 1000)
     Cookies.set(this.loginKey, 'true', {
