@@ -7,7 +7,7 @@
       </el-header>
       <el-container>
         <div class='leftCls'>
-          <el-aside width='390px'>
+          <el-aside>
             <el-tree :data="EOSData" node-key="id"
                      default-expand-all :expand-on-click-node="false">
                     <span class="custom-tree-node" slot-scope="{ node, data }">
@@ -241,16 +241,6 @@
       width: 400px;
       border-right: 2px #e5e8ea solid;
     }
-    .spanCls{
-      border-color: transparent;
-      color: #409eff;
-      background: transparent;
-      padding-left: 0;
-      padding-right: 0;
-      cursor: pointer;
-      padding: 12px 20px;
-      font-size: 14px;
-      border-radius: 4px;
-    }
+    
   }
 </style>

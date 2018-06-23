@@ -84,7 +84,7 @@ export const asyncRouterMap = [
     }, */
       {
         path: 'organizational', // 组织架构路由
-        component: () => import('@/views/management/EOrganizationalS'),
+        component: () => import('@/views/management/EOS'),
         name: 'organizational',
         meta: {
           title: 'organizational',
