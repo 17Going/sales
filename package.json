@@ -23,6 +23,7 @@
     "url": "https://github.com/17Going/sales/issues"
   },
   "dependencies": {
+    "@riophae/vue-treeselect": "0.0.30",
     "axios": "0.17.1",
     "clipboard": "1.7.1",
     "codemirror": "5.32.0",
@@ -38,6 +39,7 @@
     "mockjs": "1.0.1-beta3",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
+    "save": "^2.3.2",
     "screenfull": "3.3.2",
     "showdown": "1.8.5",
     "simplemde": "1.11.2",
