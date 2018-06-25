@@ -7,11 +7,11 @@
       </el-header>
       <el-container>
         <div class='leftCls'>
-          <el-aside>
+          <el-aside width='390px'>
             <el-tree :data="EOSData" node-key="id"
                      default-expand-all :expand-on-click-node="false">
                     <span class="custom-tree-node" slot-scope="{ node, data }">
-                        <span @mouseover="asideNodeOver(data)" @mouseout="asideNodeOut(data)">{{ data.depName }}
+                        <span :title="data.depName" @mouseover="asideNodeOver(data)" @mouseout="asideNodeOut(data)">{{ data.depName }}
                           <span v-show="data.isShowOpera">
                             <el-button type="text" v-show="data.isShowOpera" size="mini" @click="addDeptment(data)">[{{EOSLabelObj.btnAddText}}]</el-button>
                             <el-button type="text" v-show="data.parentId !== 0" size="mini" @click="editDeptment(data)">[{{EOSLabelObj.btnEditText}}]</el-button>
@@ -26,7 +26,7 @@
         <el-main>
           <router-view></router-view>
           <div class='depDailog'>
-              <div class='depCls'>
+              <div class='depCfgCls'>
                 <el-dialog v-loading='isCfgLoading' :title="titleText" :visible.sync="depDialogVisible" width="30%" @close="handleClose">
                     <hr/>
                     <el-form :rules="EOSRules" ref="EOSForm" :model="EOSForm" label-width="80px">
@@ -44,8 +44,45 @@
                     </span>
                   </el-dialog>
               </div>
-              <div>
-
+              <div class='depMoveCls'>
+                  <el-dialog :close-on-click-modal="false" v-loading='isCfgLoading' :title="titleText" :visible.sync="moveDialogVisible" width="30%" height='40%' @close="moveWinClose">
+                    <hr/>
+                    <el-form  ref="EOSMoveForm" :model="EOSMoveForm" label-width="80px">
+                      <el-form-item :label="EOSLabelObj.labelDepName" prop="deptName">
+                        {{EOSMoveForm.deptName}}
+                      </el-form-item>
+                      <el-form-item  :label="EOSLabelObj.labelParentDept">
+                        <treeselect :normalizer="normalizer" :default-expand-level='2'  @focus="getSelectList" v-model="EOSMoveForm.parentName"  :options="deptData" />
+                            <label :disabled='true' slot="option-label" slot-scope="{ node, shouldShowCount, count, labelClassName, countClassName }" :class="labelClassName">
+                              {{ node.depName}} 
+                            </label>
+                       <!--  <el-select v-model="EOSMoveForm.deptName" placeholder="请选择" @focus="getSelectList" >
+                          <el-option 
+                            v-for="item in deptData"
+                            :key="item.depName"EOSMoveForm.deptName
+                            :label="item.depName"
+                            :value="item.depName"
+                            :disabled="item.depName == EOSMoveForm.deptName"> 
+                              <el-tree width='300px' height="250px" :data="EOSData" node-key="id"  default-expand-all :expand-on-click-node="false">
+                                <span class="custom-tree-node" slot-scope="{ node, data }">
+                                    <span >{{ data.depName }}</span>
+                                </span>
+                                </el-tree>
+                          </el-option>
+                        </el-select>
+                         <el-tree :data="EOSData" node-key="id" :expand-on-click-node="false">
+                                <span class="custom-tree-node" slot-scope="{ node, data }">
+                                    <span disabled>{{ data.depName }}</span>
+                                </span>
+                                </el-tree>-->
+                      </el-form-item>
+                    </el-form>
+                    <span slot="footer" class="dialog-footer">
+                      <hr/>
+                      <el-button type="danger" @click="submitMoveForm('EOSMoveForm')">{{EOSLabelObj.labelBtnOK}}</el-button>
+                      <el-button type="info" @click="moveDialogVisible = false">{{EOSLabelObj.labelBtnCancel}}</el-button>
+                    </span>
+                  </el-dialog>
               </div>
           </div>
         </el-main>
@@ -55,9 +92,13 @@
 </template>
 <script>
   import { departmentCreate, departmentDelte, departmentEdit, departmentGetAll} from '@/api/management'
-
+  // import the component
+  import Treeselect from '@riophae/vue-treeselect'
+  // import the styles
+  import '@riophae/vue-treeselect/dist/vue-treeselect.css'
   export default {
     name: 'documentation',
+    components: { Treeselect },
     mounted () {
       this.getLeftList();
     },
@@ -65,7 +106,6 @@
       /*校验配置不能为空*/
       var _this = this;
       var checkIsNull = (rule, value, callback) => {
-        
         if (!value || value.length < 1) {
           return callback(new Error(_this.EOSLabelObj.validateInfo));
         }
@@ -78,10 +118,23 @@
         EOSRules: {
           deptName: [{validator: checkIsNull, trigger: 'blur'}],
         },
+        EOSMoveForm: {},//移动窗口form赋值
         isShowName: true,
-        EOSData: [],
-        titleText: '',//新建修改部门的title
-        depDialogVisible: false,//控制弹出窗口
+        EOSData: [],// 获取企业用户左树结构的数据
+        deptData: [],// 获取企业用户下拉结构的数据
+        normalizer(node) {
+          let isDisalbed = (node.depName == _this.EOSMoveForm.deptName);
+          
+          return {
+            id: node.id,
+            label: node.depName,
+            children: node.children,
+            isDisabled: isDisalbed
+          }
+        },
+        titleText: '',// 新建修改部门的title
+        depDialogVisible: false,// 控制弹出配置窗口
+        moveDialogVisible: false,// 控制移动窗口
         EOSLabelObj: {
           btnAddText: '添加部门',
           btnEditText: '修改部门',
@@ -99,6 +152,7 @@
       }
     },
     methods: {
+      //获取列表的数据
       getLeftList (){
         let _this = this;
         _this.isLoading = true;
@@ -106,6 +160,25 @@
              _this.isLoading = false;
             if(response.data.code === "0"){
                _this.EOSData = JSON.parse(JSON.stringify([response.data.data]));
+               _this.$set(_this.EOSMoveForm, 'parentName' , response.data.data.depName);
+               let selectStr = JSON.stringify([response.data.data])
+               _this.deptData = JSON.parse(selectStr);
+
+            }else{
+
+            }
+        })
+      },
+      //获取移动下拉框的数据
+      getSelectList (){
+        let _this = this;
+        // _this.isLoading = true;
+        departmentGetAll().then(response => {
+            //  _this.isLoading = false;
+            if(response.data.code === "0"){
+              window.abc = response.data.data;
+              let selectStr = JSON.stringify([response.data.data]).replace(/children/g,'options');
+               _this.deptData = JSON.parse(selectStr);
             }else{
 
             }
@@ -117,10 +190,17 @@
       asideNodeOut(obj) {
         this.$set(obj, 'isShowOpera', false)
       },
+      // 配置窗口关闭
       handleClose() {
         this.EOSForm = {};
         this.$refs['EOSForm'].resetFields();
         this.getLeftList(); 
+      },
+      // 移动窗口关闭
+      moveWinClose() {
+        this.EOSMoveForm = {};
+        this.$refs['EOSMoveForm'].resetFields();
+        this.getLeftList();
       },
       // 添加
       addDeptment (obj){
@@ -138,9 +218,12 @@
         this.titleText = this.EOSLabelObj.btnEditText;
         this.depDialogVisible = true;
       },
-      // 移动
+      // 移动：先删除，再新建
       moveDeptment (obj){
         this.titleText = this.EOSLabelObj.btnMoveText;
+        this.$set(this.EOSMoveForm, 'deptName' , obj.depName);
+        this.$set(this.EOSMoveForm, 'id' , obj.id)// 为删除移动的节点做准备
+        this.moveDialogVisible = true;
       },
       // 删除
       delDeptment (obj){
@@ -212,6 +295,35 @@
             }
          })
       },
+      // 移动逻辑，先删除，再新建
+      submitMoveForm(){
+        let _this = this;
+        // 删除的参数
+        let delParams = {
+          id: _this.EOSMoveForm.id
+        }
+        // 新建的参数
+        let addParams = {
+          depName: _this.EOSMoveForm.deptName,
+          parentId: Number(_this.EOSMoveForm.parentName)// 父类的ID
+        }
+        departmentDelte(delParams).then(response => {
+          if(response.data.code === "0"){
+             departmentCreate(addParams).then(response => {
+                _this.isCfgLoading = false;
+                if(response.data.code === "0"){
+                  _this.$message.success('success')
+                  _this.moveDialogVisible = false;
+                }else{
+                  _this.$message.error('error')
+                }
+              })
+          }else{
+            _this.$message.error('error')
+          }
+        }) 
+       
+      },
       append(data) {
 
       }
@@ -238,9 +350,20 @@
     }
     .leftCls {
       height: 100%;
-      width: 400px;
       border-right: 2px #e5e8ea solid;
+      .el-aside { 
+        overflow-y: auto;
+        overflow-x: auto;
+      }
     }
+    .el-scrollbar{
+      width: 50%;
+      height: 250px;
+    }
+    .el-scrollbar__view .el-select-dropdown__list{
+      height: 250px;
+    }
+    
     
   }
 </style>

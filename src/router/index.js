@@ -38,21 +38,21 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  // {
-  //   path: '',
-  //   component: Layout,
-  //   redirect: 'noredirect',
-  //   children: [{
-  //     path: 'test',
-  //     component: () => import('@/components/Atemplates/testCompents'),
-  //     name: 'test',
-  //     meta: {
-  //       title: 'test',
-  //       icon: 'component',
-  //       noCache: true
-  //     }
-  //   }]
-  // },
+  {
+    path: '',
+    component: Layout,
+    redirect: 'noredirect',
+    children: [{
+      path: 'test',
+      component: () => import('@/components/treeselect/index.vue'),
+      name: 'test',
+      meta: {
+        title: 'test',
+        icon: 'component',
+        noCache: true
+      }
+    }]
+  },
   {
     path: '',
     component: Layout,
@@ -83,17 +83,15 @@ export const asyncRouterMap = [
       }
     }, */
       {
-        path: 'organizational', // 组织架构路由
+        path: '/organizational', // 组织架构路由
         component: () => import('@/views/management/EOS'),
         name: 'organizational',
-        meta: {
-          title: 'organizational',
-          icon: 'peoples'
-        },
+        redirect: 'noredirect',
+        name: 'people',
         children: [{
-          path: 'user',
-          component: () => import('@/views/management/usertest'),
-          name: 'usetNnme',
+          path: 'enterpriseUser',
+          component: () => import('@/views/management/enterpriseUser'),
+          name: 'users',
           meta: {
             title: 'usetNnme',
             icon: 'user'

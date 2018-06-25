@@ -1,10 +1,14 @@
 <template>
+  <div>
+  <p>1111111111111111111111</p>
   <treeselect
     :options="options"
     :disable-branch-nodes="true"
     :show-count="true"
     placeholder="Where are you from?"
+    :normalizer="normalizer"
   />
+  </div>
 </template>
 
 <script>
@@ -23,21 +27,28 @@
         // define options
         options: [{
           id: 'a',
-          label: 'a',
+          aaa: 'a',
           children: [{
             id: 'aa',
-            label: 'aa'
+            aaa: 'aa'
           }, {
             id: 'ab',
-            label: 'ab'
+            aaa: 'ab'
           }]
         }, {
           id: 'b',
-          label: 'b'
+          aaa: 'b'
         }, {
           id: 'c',
-          label: 'c'
-        }]
+          aaa: 'c'
+        }],
+         normalizer(node) {
+          return {
+            id: node.id,
+            label: node.aaa,
+            children: node.children
+          }
+        }
       }
     }
   }

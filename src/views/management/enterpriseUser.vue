@@ -7,17 +7,17 @@
         <div class="toolbarCls">
           <div class="demo-input-suffix">
             <el-row>
-              <el-col :span='6'>
+              <el-col :xs="8" :md="11" :lg="10" :xl="6">
                 {{usersLabelObj.labelSearchTxt}}&nbsp;&nbsp;&nbsp;&nbsp;<el-input v-model='searchPhoneORname' :placeholder="usersLabelObj.labelSearchTxt"></el-input>
                </el-col> 
-                <el-col :span='6'>
+                <el-col :xs="8" :md="11" :lg="9" :xl="6">
                     {{usersLabelObj.labelStateTxt}}&nbsp;&nbsp;&nbsp;&nbsp; <el-select v-model="userState" placeholder="请选择">
                       <el-option :label='usersLabelObj.txtAll' value='' checked></el-option>
                       <el-option :label='usersLabelObj.txtNormal' value='normal'></el-option>
                       <el-option :label='usersLabelObj.txtDisable' value='disable'></el-option>
                     </el-select>
                 </el-col>
-                <el-col :span='12'>
+                <el-col :xs="8" :md="2" :lg="5" :xl="12">
                   <el-button type="danger" @click="searchUsersFun()">立即查询</el-button>
                 </el-col>
             </el-row>
@@ -43,7 +43,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column  prop="userDpm" :label="usersLabelObj.userDpm" width="250">
+              <el-table-column  prop="userDpm" :label="usersLabelObj.userDpm" >
                 <template slot-scope='scope'>
                   <p>{{scope.row.userDpm}}</p>
                 </template>
@@ -73,17 +73,17 @@
                 </template>
               </el-table-column>
               
-              <el-table-column  prop="userOpera" :label="usersLabelObj.userOpera" >
+              <el-table-column  prop="userOpera" :label="usersLabelObj.userOpera" width="160">
                 <template slot-scope='scope'>
-                  <el-row class='operaCls'>
+                  <el-row class='operaCls' :gutter="20">
                       <el-col :span='8'>
-                        <el-button type="text" @click="modifyUserFun(scope.row)">修改</el-button>
+                        <el-button type="text" @click="modifyUserFun(scope.row)">[修改]</el-button>
                       </el-col>
                       <el-col :span='8'>
-                        <el-button type="text">禁用</el-button>
+                        <el-button type="text">[禁用]</el-button>
                       </el-col>
                       <el-col :span='8'>
-                        <el-button type="text">离职</el-button>
+                        <el-button type="text">[离职]</el-button>
                       </el-col>
                   </el-row>
 
@@ -398,7 +398,6 @@ export default {
     margin-left: 26px;
   }
   .usersCls .contentCls{
-      height: 719px;
       border-radius:3px;
       background:rgba(255,255,255,1);
     }
@@ -430,7 +429,7 @@ export default {
   }
  
   .usersCls .contentCls .el-cm {
-      width:650px;
+      width: 100%;
       margin-top:10px;
       background:rgba(255,255,255,1);
       font-size:18px;
