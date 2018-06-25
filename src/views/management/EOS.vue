@@ -7,18 +7,23 @@
       </el-header>
       <el-container>
         <div class='leftCls'>
-          <el-aside width='390px'>
+          <el-aside >
             <el-tree :data="EOSData" node-key="id"
                      default-expand-all :expand-on-click-node="false">
                     <span class="custom-tree-node" slot-scope="{ node, data }">
-                        <span :title="data.depName" @mouseover="asideNodeOver(data)" @mouseout="asideNodeOut(data)">{{ data.depName }}
-                          <span v-show="data.isShowOpera">
-                            <el-button type="text" v-show="data.isShowOpera" size="mini" @click="addDeptment(data)">[{{EOSLabelObj.btnAddText}}]</el-button>
-                            <el-button type="text" v-show="data.parentId !== 0" size="mini" @click="editDeptment(data)">[{{EOSLabelObj.btnEditText}}]</el-button>
-                            <el-button type="text" v-show="data.parentId !== 0" size="mini" @click="moveDeptment(data)">[{{EOSLabelObj.btnMoveText}}]</el-button>
-                            <el-button type="text" v-show="!data.children" size="mini" @click="delDeptment(data)">[{{EOSLabelObj.btnDelText}}]</el-button>
-                          </span>
+                      <el-dropdown>
+                        <!-- <span >
+                          下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
+                         @mouseover="asideNodeOver(data)" @mouseout="asideNodeOut(data)" -->
+                        <span class="el-dropdown-link" :title="data.depName" trigger="hover">{{ data.depName.length > 10 ? data.depName : data.depName+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}}</span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item ><el-button type="text"  size="mini" @click="addDeptment(data)">[{{EOSLabelObj.btnAddText}}]</el-button></el-dropdown-item>
+                            <el-dropdown-item v-show="data.parentId !== 0"><el-button type="text"  size="mini" @click="editDeptment(data)">[{{EOSLabelObj.btnEditText}}]</el-button></el-dropdown-item>
+                            <el-dropdown-item v-show="data.parentId !== 0"><el-button type="text"  size="mini" @click="moveDeptment(data)">[{{EOSLabelObj.btnMoveText}}]</el-button></el-dropdown-item>
+                            <el-dropdown-item v-show="!data.children"><el-button type="text" size="mini" @click="delDeptment(data)">[{{EOSLabelObj.btnDelText}}]</el-button></el-dropdown-item>
+                          </el-dropdown-menu>
+                        </el-dropdown>
                     </span>
             </el-tree>
           </el-aside>
@@ -183,6 +188,10 @@
 
             }
         })
+      },
+      // 处理名称过长情况
+      getDeptName(){
+
       },
       asideNodeOver(obj) {
         this.$set(obj, 'isShowOpera', true)
