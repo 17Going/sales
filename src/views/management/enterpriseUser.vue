@@ -7,17 +7,17 @@
         <div class="toolbarCls">
           <div class="demo-input-suffix">
             <el-row>
-              <el-col :xs="8" :md="11" :lg="10" :xl="6">
+              <el-col :xs="8" :md="11" :lg="9" :xl="6">
                 {{usersLabelObj.labelSearchTxt}}&nbsp;&nbsp;&nbsp;&nbsp;<el-input v-model='searchPhoneORname' :placeholder="usersLabelObj.labelSearchTxt"></el-input>
                </el-col> 
-                <el-col :xs="8" :md="11" :lg="9" :xl="6">
+                <el-col :xs="8" :md="11" :lg="8" :xl="6">
                     {{usersLabelObj.labelStateTxt}}&nbsp;&nbsp;&nbsp;&nbsp; <el-select v-model="userState" placeholder="请选择">
                       <el-option :label='usersLabelObj.txtAll' value='' checked></el-option>
                       <el-option :label='usersLabelObj.txtNormal' value='normal'></el-option>
                       <el-option :label='usersLabelObj.txtDisable' value='disable'></el-option>
                     </el-select>
                 </el-col>
-                <el-col :xs="8" :md="2" :lg="5" :xl="12">
+                <el-col :xs="8" :md="2" :lg="7" :xl="8">
                   <el-button type="danger" @click="searchUsersFun()">立即查询</el-button>
                 </el-col>
             </el-row>
@@ -247,15 +247,19 @@ export default {
             data: {}
         }
        response.data.data = {
+            activeStaffCount:0,//在职人数
+            undistributedCount:0,//未分配人数
+            totalPageNum: 1,// 一共有几页
+            totalCount: 5,// 共有多少条记录
             list: [
               {
-                userPhone: '13681764137',
-                userName: '杨向阳1',
-                userDpm: '技术部[项目经理]',
-                userPartTimeDpm: '运营部[业务员]',
-                userEmail: 'yxy@qq.com',
-                userCapacity: '10',
-                userStatus: 'normal' 
+                userPhone: '13681764137',// 用户手机号码
+                userName: '杨向阳1', // 用户名称
+                userDpm: '技术部[项目经理]', // 用户部门[职称]
+                userPartTimeDpm: '运营部[业务员]',// 兼职部门[职称]
+                userEmail: 'yxy@qq.com',// 用户邮箱
+                userCapacity: '10',// 客户池容量
+                userStatus: 'normal' // 使用状态：normal(正常) disabled(禁用)
               }, {
                 userPhone: '13781764137',
                 userName: '杨向阳2',
@@ -290,8 +294,7 @@ export default {
                 userStatus: 'normal'
               }
             
-            ],
-            totalCount: 5
+            ]
           }
         _this.fmData = response.data.data.list;
         _this.totalCount = parseInt(response.data.data.totalCount);

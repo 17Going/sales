@@ -16,7 +16,7 @@
                           下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
                          @mouseover="asideNodeOver(data)" @mouseout="asideNodeOut(data)" -->
-                        <span class="el-dropdown-link" :title="data.depName" trigger="hover">{{ data.depName.length > 10 ? data.depName : data.depName+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}}</span>
+                        <span class="el-dropdown-link" :title="data.depName" trigger="hover">{{getDeptName(data.depName)}}</span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item ><el-button type="text"  size="mini" @click="addDeptment(data)">[{{EOSLabelObj.btnAddText}}]</el-button></el-dropdown-item>
                             <el-dropdown-item v-show="data.parentId !== 0"><el-button type="text"  size="mini" @click="editDeptment(data)">[{{EOSLabelObj.btnEditText}}]</el-button></el-dropdown-item>
@@ -190,8 +190,8 @@
         })
       },
       // 处理名称过长情况
-      getDeptName(){
-
+      getDeptName(name){
+          return name.length > 20 ? name.substr(0,20)+"..." : name;
       },
       asideNodeOver(obj) {
         this.$set(obj, 'isShowOpera', true)
@@ -307,31 +307,21 @@
       // 移动逻辑，先删除，再新建
       submitMoveForm(){
         let _this = this;
-        // 删除的参数
-        let delParams = {
-          id: _this.EOSMoveForm.id
-        }
-        // 新建的参数
-        let addParams = {
+        // 移动的参数
+        let params = {
+          id: _this.EOSMoveForm.id,
           depName: _this.EOSMoveForm.deptName,
           parentId: Number(_this.EOSMoveForm.parentName)// 父类的ID
         }
-        departmentDelte(delParams).then(response => {
+        departmentEdit(params).then(response => {
+          _this.isCfgLoading = false;
           if(response.data.code === "0"){
-             departmentCreate(addParams).then(response => {
-                _this.isCfgLoading = false;
-                if(response.data.code === "0"){
-                  _this.$message.success('success')
-                  _this.moveDialogVisible = false;
-                }else{
-                  _this.$message.error('error')
-                }
-              })
+            _this.$message.success('success')
+            _this.moveDialogVisible = false;
           }else{
             _this.$message.error('error')
           }
         }) 
-       
       },
       append(data) {
 
