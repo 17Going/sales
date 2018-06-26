@@ -41,21 +41,6 @@ export const asyncRouterMap = [
   {
     path: '',
     component: Layout,
-    redirect: 'noredirect',
-    children: [{
-      path: 'test',
-      component: () => import('@/components/treeselect/index.vue'),
-      name: 'test',
-      meta: {
-        title: 'test',
-        icon: 'component',
-        noCache: true
-      }
-    }]
-  },
-  {
-    path: '',
-    component: Layout,
     redirect: 'dashboard',
     children: [{
       path: 'dashboard',
@@ -420,7 +405,26 @@ export const asyncRouterMap = [
       }
     }]
   },
-
+  {
+    path: '/test',
+    component: Layout,
+    redirect: 'noredirect',
+    name: 'test',
+    meta: {
+      title: 'test',
+      icon: 'table'
+    },
+    children: [{
+      path: 'treeselect',
+      component: () => import('@/components/treeselect/index'),
+      name: 'treeselect',
+      meta: {
+        title: 'treeselect',
+        icon: 'component',
+        noCache: true
+      }
+    }]
+  },
   // {
   //   path: '/clipboard',
   //   component: Layout,
