@@ -39,17 +39,6 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
-    path: '',
-    component: Layout,
-    redirect: 'dashboard',
-    children: [{
-      path: 'dashboard',
-      component: () => import('@/views/dashboard/index'),
-      name: 'dashboard',
-      meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
-    }]
-  },
-  {
     path: '/management', // 企业管理路由
     component: Layout,
     name: 'management',
