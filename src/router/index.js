@@ -72,7 +72,6 @@ export const asyncRouterMap = [
         component: () => import('@/views/management/EOS'),
         name: 'organizational',
         redirect: 'noredirect',
-        name: 'people',
         children: [{
           path: 'enterpriseUser',
           component: () => import('@/views/management/enterpriseUser'),

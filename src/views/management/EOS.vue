@@ -96,7 +96,7 @@
   </div>
 </template>
 <script>
-  import { departmentCreate, departmentDelte, departmentEdit, departmentGetAll} from '@/api/management'
+  import { departmentCreate, departmentDelte, departmentEdit, departmentGetAll } from '@/api/management'
   // import the component
   import Treeselect from '@riophae/vue-treeselect'
   // import the styles
@@ -104,11 +104,11 @@
   export default {
     name: 'documentation',
     components: { Treeselect },
-    mounted () {
+    mounted() {
       this.getLeftList();
     },
-    data () {
-      /*校验配置不能为空*/
+    data() {
+      /* 校验配置不能为空*/
       var _this = this;
       var checkIsNull = (rule, value, callback) => {
         if (!value || value.length < 1) {
@@ -121,77 +121,74 @@
         isCfgLoading: false,
         EOSForm: {},
         EOSRules: {
-          deptName: [{validator: checkIsNull, trigger: 'blur'}],
+          deptName: [{ validator: checkIsNull, trigger: 'blur' }]
         },
-        EOSMoveForm: {},//移动窗口form赋值
+        EOSMoveForm: {}, // 移动窗口form赋值
         isShowName: true,
-        EOSData: [],// 获取企业用户左树结构的数据
-        deptData: [],// 获取企业用户下拉结构的数据
+        EOSData: [], // 获取企业用户左树结构的数据
+        deptData: [], // 获取企业用户下拉结构的数据
         normalizer(node) {
-          let isDisalbed = (node.depName == _this.EOSMoveForm.deptName);
-          
           return {
             id: node.id,
             label: node.depName,
             children: node.children,
-            isDisabled: isDisalbed
+            isDisabled: (node.depName === _this.EOSMoveForm.deptName)
           }
         },
-        titleText: '',// 新建修改部门的title
-        depDialogVisible: false,// 控制弹出配置窗口
-        moveDialogVisible: false,// 控制移动窗口
+        titleText: '', // 新建修改部门的title
+        depDialogVisible: false, // 控制弹出配置窗口
+        moveDialogVisible: false, // 控制移动窗口
         EOSLabelObj: {
           btnAddText: '添加部门',
           btnEditText: '修改部门',
           btnMoveText: '移动部门',
           btnDelText: '删除部门',
           labelBtnOK: '确 定',
-          labelBtnCancel: '取 消', 
+          labelBtnCancel: '取 消',
           labelParentDept: '上级部门',
           labelDepName: '部门名称',
           validateInfo: '此项配置不能为空',
           confirmInfo: '确认删除?',
           confirmTitle: '确认?',
           noCfirmInfo: '已取消删除'
-      }
+        }
       }
     },
     methods: {
-      //获取列表的数据
-      getLeftList (){
-        let _this = this;
+      // 获取列表的数据
+      getLeftList() {
+        const _this = this;
         _this.isLoading = true;
         departmentGetAll().then(response => {
-             _this.isLoading = false;
-            if(response.data.code === "0"){
-               _this.EOSData = JSON.parse(JSON.stringify([response.data.data]));
-               _this.$set(_this.EOSMoveForm, 'parentName' , response.data.data.depName);
-               let selectStr = JSON.stringify([response.data.data])
-               _this.deptData = JSON.parse(selectStr);
-
-            }else{
-
-            }
+          _this.isLoading = false;
+          if (response.data.code === '0') {
+            _this.EOSData = JSON.parse(JSON.stringify([response.data.data]));
+            _this.$set(_this.EOSMoveForm, 'parentName', response.data.data.depName);
+            var selectStr = JSON.stringify([response.data.data])
+            _this.deptData = JSON.parse(selectStr);
+          } else {
+            _this.$message.error();
+            // 扩展使用
+          }
         })
       },
-      //获取移动下拉框的数据
-      getSelectList (){
-        let _this = this;
+      // 获取移动下拉框的数据
+      getSelectList() {
+        const _this = this;
         // _this.isLoading = true;
         departmentGetAll().then(response => {
-            //  _this.isLoading = false;
-            if(response.data.code === "0"){
-              window.abc = response.data.data;
-              let selectStr = JSON.stringify([response.data.data]).replace(/children/g,'options');
-               _this.deptData = JSON.parse(selectStr);
-            }else{
-
-            }
+          //  _this.isLoading = false;
+          if (response.data.code === '0') {
+            window.abc = response.data.data;
+            _this.deptData = JSON.parse(JSON.stringify([response.data.data]));
+          } else {
+            // 扩展使用
+          }
         })
       },
       // 处理名称过长情况
-      getDeptName(name){
-          return name.length > 20 ? name.substr(0,20)+"..." : name;
+      getDeptName(name) {
+        return name.length > 20 ? name.substr(0, 20) + '...' : name;
       },
       asideNodeOver(obj) {
         this.$set(obj, 'isShowOpera', true)
@@ -203,7 +200,7 @@
       handleClose() {
         this.EOSForm = {};
         this.$refs['EOSForm'].resetFields();
-        this.getLeftList(); 
+        this.getLeftList();
       },
       // 移动窗口关闭
       moveWinClose() {
@@ -212,100 +209,98 @@
         this.getLeftList();
       },
       // 添加
-      addDeptment (obj){
+      addDeptment(obj) {
         this.isShowName = true;
-        this.$set(this.EOSForm, 'parentId' , obj.id)//新建时，就是当前的ID
-        this.$set(this.EOSForm, 'parentName' , obj.depName)
+        this.$set(this.EOSForm, 'parentId', obj.id); // 新建时，就是当前的ID
+        this.$set(this.EOSForm, 'parentName', obj.depName)
         this.titleText = this.EOSLabelObj.btnAddText;
         this.depDialogVisible = true;
       },
       // 修改
-      editDeptment (obj){
+      editDeptment(obj) {
         this.isShowName = false;
-        this.$set(this.EOSForm, 'deptName' , obj.depName)
-        this.$set(this.EOSForm, 'id' , obj.id)
+        this.$set(this.EOSForm, 'deptName', obj.depName)
+        this.$set(this.EOSForm, 'id', obj.id)
         this.titleText = this.EOSLabelObj.btnEditText;
         this.depDialogVisible = true;
       },
       // 移动：先删除，再新建
-      moveDeptment (obj){
+      moveDeptment(obj) {
         this.titleText = this.EOSLabelObj.btnMoveText;
-        this.$set(this.EOSMoveForm, 'deptName' , obj.depName);
-        this.$set(this.EOSMoveForm, 'id' , obj.id)// 为删除移动的节点做准备
+        this.$set(this.EOSMoveForm, 'deptName', obj.depName);
+        this.$set(this.EOSMoveForm, 'id', obj.id)// 为删除移动的节点做准备
         this.moveDialogVisible = true;
       },
       // 删除
-      delDeptment (obj){
-        let _this = this;
-        let params = { 
-            id: obj.id
-          }
+      delDeptment(obj) {
+        const _this = this;
+        let params = {
+          id: obj.id
+        }
         _this.$confirm(_this.EOSLabelObj.confirmInfo, _this.EOSLabelObj.confirmTitle, {
-            confirmButtonText: _this.EOSLabelObj.labelBtnOK,
-            cancelButtonText:  _this.EOSLabelObj.labelBtnCancel,
-            type: 'info'
-          }).then(() => {
-             _this.isLoading = true;
-            departmentDelte(params).then(response => {
-                 _this.isLoading = false;
-                if(response.data.code === "0"){
-                  _this.$message.success('success') 
-                  _this.getLeftList();
-                }else{
-                  _this.$message.error('error')
-                }
-            }) 
-          }).catch(() => {
-            _this.$message({
-              type: 'info',
-              message: _this.EOSLabelObj.noCfirmInfo
-            })
-          }
+          confirmButtonText: _this.EOSLabelObj.labelBtnOK,
+          cancelButtonText: _this.EOSLabelObj.labelBtnCancel,
+          type: 'info'
+        }).then(() => {
+          _this.isLoading = true;
+          departmentDelte(params).then(response => {
+            _this.isLoading = false;
+            if (response.data.code === '0') {
+              _this.$message.success('success');
+              _this.getLeftList();
+            } else {
+              _this.$message.error('error')
+            }
+          })
+        }).catch(() => {
+          _this.$message({
+            type: 'info',
+            message: _this.EOSLabelObj.noCfirmInfo
+          })
+        }
         )
       },
-      submitForm (formName){
-         var _this = this;
-         _this.$refs[formName].validate((valid) => {  
-            if(valid){ 
-                let params = {
-                  depName: _this.EOSForm.deptName
-                }
-                if(_this.EOSForm.id)
-                {
-                  params.id =  _this.EOSForm.id;
-                  _this.isCfgLoading = true;
-                  departmentEdit(params).then(response => {
-                    _this.isCfgLoading = false;
-                    if(response.data.code === "0"){
-                      _this.$message.success('success')
-                      _this.depDialogVisible = false;
-                      _this.getLeftList();
-                    }else{
-                      _this.$message.error('error')
-                    }
-                  })
-                }else if(_this.EOSForm.parentId)
-                {
-                  params.parentId =  Number(_this.EOSForm.parentId);
-                  _this.isCfgLoading = true;
-                  departmentCreate(params).then(response => {
-                    _this.isCfgLoading = false;
-                    if(response.data.code === "0"){
-                      _this.$message.success('success')
-                      _this.depDialogVisible = false;
-                      _this.getLeftList();
-                    }else{
-                      _this.$message.error('error')
-                    }
-                  })
-                }
-            } else {
-
+      submitForm(formName) {
+        var _this = this;
+        _this.$refs[formName].validate((valid) => {
+          if (valid) {
+            let params = {
+              depName: _this.EOSForm.deptName
             }
-         })
+            if (_this.EOSForm.id) {
+              params.id = _this.EOSForm.id;
+              _this.isCfgLoading = true;
+              departmentEdit(params).then(response => {
+                _this.isCfgLoading = false;
+                if (response.data.code === '0') {
+                  _this.$message.success('success')
+                  _this.depDialogVisible = false;
+                  _this.getLeftList();
+                } else {
+                  _this.$message.error('error')
+                }
+              })
+            } else if (_this.EOSForm.parentId) {
+              params.parentId = Number(_this.EOSForm.parentId);
+              _this.isCfgLoading = true;
+              departmentCreate(params).then(response => {
+                _this.isCfgLoading = false;
+                if (response.data.code === '0') {
+                  _this.$message.success('success')
+                  _this.depDialogVisible = false;
+                  _this.getLeftList();
+                } else {
+                  _this.$message.error('error');
+                }
+              })
+            }
+          } else {
+            // 扩展代码
+          }
+        })
       },
-      // 移动逻辑，先删除，再新建
-      submitMoveForm(){
+      // 移动逻辑下发
+      submitMoveForm() {
         let _this = this;
         // 移动的参数
         let params = {
@@ -315,13 +310,13 @@
         }
         departmentEdit(params).then(response => {
           _this.isCfgLoading = false;
-          if(response.data.code === "0"){
+          if (response.data.code === '0') {
             _this.$message.success('success')
             _this.moveDialogVisible = false;
-          }else{
-            _this.$message.error('error')
+          } else {
+            _this.$message.error('error');
           }
-        }) 
+        })
       },
       append(data) {
 
