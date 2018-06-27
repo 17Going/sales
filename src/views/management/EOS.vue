@@ -234,7 +234,7 @@
       // 删除
       delDeptment(obj) {
         const _this = this;
-        let params = {
+        const params = {
           id: obj.id
         }
         _this.$confirm(_this.EOSLabelObj.confirmInfo, _this.EOSLabelObj.confirmTitle, {
@@ -264,7 +264,7 @@
         var _this = this;
         _this.$refs[formName].validate((valid) => {
           if (valid) {
-            let params = {
+            const params = {
               depName: _this.EOSForm.deptName
             }
             if (_this.EOSForm.id) {
@@ -301,9 +301,9 @@
       },
       // 移动逻辑下发
       submitMoveForm() {
-        let _this = this;
+        const _this = this;
         // 移动的参数
-        let params = {
+        const params = {
           id: _this.EOSMoveForm.id,
           depName: _this.EOSMoveForm.deptName,
           parentId: Number(_this.EOSMoveForm.parentName)// 父类的ID

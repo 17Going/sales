@@ -136,6 +136,7 @@
   </div>
 </template>
 <script>
+import { userGetAll } from '@/api/management'
 export default {
   name: 'table',
   data() {
@@ -236,11 +237,11 @@ export default {
       const _this = this;
       var params = {
         page: _this.currentPage,
-        pageSize: _this.pagesize,
-        startDate: _this.getSTime(_this.timeVal[0]),
-        endDate: _this.getSTime(_this.timeVal[1])
+        pageSize: _this.pagesize
       }
       _this.isLoading = true;
+      console.log(params)
+      userGetAll
       var response = {
         code: 0,
         data: {}
@@ -333,7 +334,7 @@ export default {
     },
     /* 转换状态 0-正常 1-删除 2-禁用*/
     getStatus(state) {
-      let objState = {
+      const objState = {
         0: this.usersLabelObj.txtNormal,
         1: this.usersLabelObj.txtDeleted,
         2: this.usersLabelObj.txtDisable
@@ -342,7 +343,7 @@ export default {
       return objState[state];
     },
     getCSSStatus(state) {
-      let objCSSState = {
+      const objCSSState = {
         0: 'success',
         1: 'info',
         2: 'danger'

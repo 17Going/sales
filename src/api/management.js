@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 
+/* BEGIN: 部门API接口 */
 // 部门列表
 export function departmentGetAll() {
   return request({
@@ -7,6 +8,7 @@ export function departmentGetAll() {
     method: 'get'
   })
 }
+
 // 创建部门
 export function departmentCreate(query) {
   return request({
@@ -15,6 +17,7 @@ export function departmentCreate(query) {
     data: query
   })
 }
+
 // 修改部门
 export function departmentEdit(params) {
   return request({
@@ -23,6 +26,7 @@ export function departmentEdit(params) {
     data: params
   })
 }
+
 // 移动部门
 export function departmentMove(params) {
   return request({
@@ -31,6 +35,7 @@ export function departmentMove(params) {
     data: params
   })
 }
+
 // 删除部门
 export function departmentDelte(params) {
   return request({
@@ -39,3 +44,15 @@ export function departmentDelte(params) {
     data: params
   })
 }
+/* END: 部门API接口 */
+
+/* BEGIN: 用户API接口 */
+// 用户列表数据接口
+export function userGetAll(query) {
+  return request({
+    url: '/user/getAll',
+    method: 'get',
+    data: query
+  })
+}
+/* END: 用户API接口 */
