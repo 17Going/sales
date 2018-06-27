@@ -68,19 +68,13 @@ export const asyncRouterMap = [
       }
     }, */
       {
-        path: '/organizational', // 组织架构路由
+        path: 'organizational', // 组织架构路由
         component: () => import('@/views/management/EOS'),
         name: 'organizational',
-        redirect: 'noredirect',
-        children: [{
-          path: 'enterpriseUser',
-          component: () => import('@/views/management/enterpriseUser'),
-          name: 'users',
-          meta: {
-            title: 'usetNnme',
-            icon: 'user'
-          }
-        }]
+        meta: {
+          title: 'organizational',
+          icon: 'peoples'
+        }
       }, {
         path: 'permissionGroup', // 权限组路由
         component: () => import('@/views/management/permissionGroup'),

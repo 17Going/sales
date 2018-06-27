@@ -16,7 +16,7 @@
                           下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
                         </span>
                          @mouseover="asideNodeOver(data)" @mouseout="asideNodeOut(data)" -->
-                        <span class="el-dropdown-link" :title="data.depName" trigger="hover">{{getDeptName(data.depName)}}</span>
+                        <span class="el-dropdown-link" :title="data.depName" trigger="hover" @click='handleClick(data)'>{{getDeptName(data.depName)}}</span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item ><el-button type="text"  size="mini" @click="addDeptment(data)">[{{EOSLabelObj.btnAddText}}]</el-button></el-dropdown-item>
                             <el-dropdown-item v-show="data.parentId !== 0"><el-button type="text"  size="mini" @click="editDeptment(data)">[{{EOSLabelObj.btnEditText}}]</el-button></el-dropdown-item>
@@ -29,7 +29,9 @@
           </el-aside>
         </div>
         <el-main>
-          <router-view></router-view>
+          <div>
+             <enterprise-user></enterprise-user>
+          </div>
           <div class='depDailog'>
               <div class='depCfgCls'>
                 <el-dialog v-loading='isCfgLoading' :title="titleText" :visible.sync="depDialogVisible" width="30%" @close="handleClose">
@@ -99,11 +101,12 @@
   import { departmentCreate, departmentDelte, departmentEdit, departmentGetAll } from '@/api/management'
   // import the component
   import Treeselect from '@riophae/vue-treeselect'
+  import enterpriseUser from '@/views/management/enterpriseUser'
   // import the styles
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
   export default {
     name: 'documentation',
-    components: { Treeselect },
+    components: { Treeselect, enterpriseUser },
     mounted() {
       this.getLeftList();
     },
@@ -318,8 +321,9 @@
           }
         })
       },
-      append(data) {
-
+      handleClick(data) {
+        console.log(data.id);
+        this.$emit('upDepId', data.id);
       }
     }
   }

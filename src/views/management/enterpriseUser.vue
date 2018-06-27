@@ -2,7 +2,8 @@
   <div class="usersCls">
       <div class="contentCls">
         <div class="mainTopCls">
-          {{userCompany}}在职人员{{totalCount}}人,其中<el-button type="text">未分配部门人员{{noDeUser}}人</el-button>
+          {{userCompany}}在职人员{{totalCount}}人,其中<el-button type="text">未分配部门人员{{undistributedCount}}人</el-button>
+          <p @upDepId='loadUser(id)' v-if=false></p>
         </div>
         <div class="toolbarCls">
           <div class="demo-input-suffix">
@@ -28,7 +29,7 @@
         </div>
         <div class="tableCls">
             
-            <el-table v-loading="isLoading" :data="fmData" 
+            <el-table v-loading="isLoading" :data="userData" 
                 :default-sort = "{prop: 'phone', order: 'descending'}" style="width: 100%" max-height="500" border>
 
               <el-table-column sortable  prop="phone" :label="usersLabelObj.userPhone">
@@ -142,7 +143,7 @@ export default {
   data() {
     return {
       userCompany: '华为公司',
-      noDeUser: 0, /* 不在部门中的员工人数*/
+      undistributedCount: 0, /* 不在部门中的员工人数*/
       searchPhoneORname: '', /* 根据姓名或电话查询*/
       userState: '', /* 根据状态查询*/
       ccsStateVal: '',
@@ -186,40 +187,12 @@ export default {
         labelCapacity: '客户池容量',
         userCfgInfo: '注：试用企业最多可添加10个用户，客户池容量最高30，开通正式版可享受更多权益。'
       },
-      isLoading: true,
-      fmData: [],
-      /* 扩展代码*/
-      pickerOptions2: {
-        shortcuts: [{
-          text: '最近一周',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近一个月',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-            picker.$emit('pick', [start, end]);
-          }
-        }, {
-          text: '最近三个月',
-          onClick(picker) {
-            const end = new Date();
-            const start = new Date();
-            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-            picker.$emit('pick', [start, end]);
-          }
-        }]
-      }
+      isLoading: false,
+      userData: []
     }
   },
   mounted() {
-    this.getPagedData();
+    // 扩展代码
   },
   methods: {
     /* Begin: 分页必备 */
@@ -236,75 +209,23 @@ export default {
     getPagedData() {
       const _this = this;
       var params = {
-        page: _this.currentPage,
-        pageSize: _this.pagesize
+        pageIndex: _this.currentPage,
+        pageSize: _this.pagesize,
+        depId: _this.depId
       }
       _this.isLoading = true;
-      console.log(params)
-      userGetAll
-      var response = {
-        code: 0,
-        data: {}
-      }
-      console.log(params)
-      response.data.data = {
-        activeStaffCount: 0, // 在职人数
-        undistributedCount: 0, // 未分配人数
-        totalPageNum: 1, // 一共有几页
-        totalCount: 5, // 共有多少条记录
-        list: [
-          {
-            id: 1, // 用户ID
-            phone: '13681764137', // 用户手机号码
-            userName: '杨向阳1', // 用户名称
-            depName: '技术部', // 用户部门
-            jobName: 'CTO', // 用户职称
-            email: 'yxy@qq.com', // 用户邮箱
-            cap: 1, // 客户池容量
-            status: 0 // 使用状态：0：正常 1：删除 2：禁用
-          }, {
-            id: 2, // 用户ID
-            phone: '13781764137', // 用户手机号码
-            userName: '杨向阳2', // 用户名称
-            depName: '技术部', // 用户部门
-            jobName: 'UI', // 用户职称
-            email: 'yxy@qq.com', // 用户邮箱
-            cap: 3, // 客户池容量
-            status: 0 // 使用状态：0：正常 1：删除 2：禁用
-          }, {
-            id: 3, // 用户ID
-            phone: '13881764137', // 用户手机号码
-            userName: '杨向阳3', // 用户名称
-            depName: '技术部', // 用户部门
-            jobName: 'UE', // 用户职称
-            email: 'yxy@qq.com', // 用户邮箱
-            cap: 50, // 客户池容量
-            status: 1 // 使用状态：0：正常 1：删除 2：禁用
-          }, {
-            id: 4, // 用户ID
-            phone: '13981764137', // 用户手机号码
-            userName: '杨向阳5', // 用户名称
-            depName: '人力资源部', // 用户部门
-            jobName: 'HR', // 用户职称
-            email: 'yxy@qq.com', // 用户邮箱
-            cap: 5, // 客户池容量
-            status: 0 // 使用状态：0：正常 1：删除 2：禁用
-          }, {
-            id: 5, // 用户ID
-            phone: '14081764137', // 用户手机号码
-            userName: '杨向阳6', // 用户名称
-            depName: '董事部', // 用户部门
-            jobName: 'CEO', // 用户职称
-            email: 'yxy@qq.com', // 用户邮箱
-            cap: 3, // 客户池容量
-            status: 2 // 使用状态：0：正常 1：删除 2：禁用
-          }
-
-        ]
-      }
-      _this.fmData = response.data.data.list;
-      _this.totalCount = parseInt(response.data.data.totalCount);
-      _this.isLoading = false;
+      userGetAll(params).then(response => {
+        console.log(response);
+        _this.isLoading = false;
+        if (response.data.code === '0') {
+          _this.userData = response.data.data.list;
+          _this.totalCount = 14;
+          _this.undistributedCount = response.data.data.undistributedCount;
+        } else {
+          _this.$message.error();
+          // 扩展使用
+        }
+      })
     },
     /* END: 分页必备 */
     addUsersFun() {
@@ -352,6 +273,10 @@ export default {
     },
     /* 获取列表数据，代表查询*/
     handleClick() {
+      this.getPagedData();
+    },
+    loadUser(id) {
+      this.$set(this, 'depId', id);
       this.getPagedData();
     }
   }
