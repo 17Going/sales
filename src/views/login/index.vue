@@ -1,19 +1,19 @@
 <template>
   <div class="login-container">
-    <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
+    <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left"  autocomplete="off">
       <div class="title-container">
         <h3 class="title">{{$t('login.title')}}</h3>
         <!--delete by ligaoming 20180614 删除语言切换-->
         <!--<lang-select class="set-language"></lang-select>-->
       </div>
-      <el-form-item prop="username">
+      <el-form-item prop="username"  autocomplete="off">
         <span class="svg-container svg-container_login">
           <svg-icon icon-class="user" />
         </span>
         <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
       </el-form-item>
 
-      <el-form-item prop="password">
+      <el-form-item prop="password"  autocomplete="off">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
@@ -138,11 +138,13 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-$bg:#2d3a4b;
+$bg:rgba(14, 58, 110, 1); // #2d3a4b 默认 #BDC1C4 帆船色
 $light_gray:#eee;
 
 /* reset element-ui css */
 .login-container {
+  background-image: url(../../assets/login/login2.jpg);
+  background-color: #242645;
   .el-input {
     display: inline-block;
     height: 47px;
@@ -156,9 +158,11 @@ $light_gray:#eee;
       color: $light_gray;
       height: 47px;
       &:-webkit-autofill {
-        -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: #fff !important;
-      }
+       // -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
+       // -webkit-text-fill-color: #fff !important;
+        -webkit-transition-delay: 99999s; // 通过延长增加自动填充背景色的方式, 是用户感受不到样式的变化
+        -webkit-transition: color 99999s ease-out, background-color 99999s ease-out;
+      };
     }
   }
   .el-form-item {
@@ -179,7 +183,7 @@ $light_gray:#eee;
   position: fixed;
   height: 100%;
   width: 100%;
-  background-color: $bg;
+  // background-color: $bg; 删除背景色
   .login-form {
     position: absolute;
     left: 0;
