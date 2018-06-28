@@ -30,7 +30,7 @@
         </div>
         <el-main>
           <div>
-             <enterprise-user></enterprise-user>
+             <enterprise-user :depId='depId' ref="selectUser"></enterprise-user>
           </div>
           <div class='depDailog'>
               <div class='depCfgCls'>
@@ -120,6 +120,7 @@
         callback();
       }
       return {
+        depId: '', // 用于传值(用户或者职位)
         isLoading: false,
         isCfgLoading: false,
         EOSForm: {},
@@ -169,6 +170,10 @@
             _this.$set(_this.EOSMoveForm, 'parentName', response.data.data.depName);
             var selectStr = JSON.stringify([response.data.data])
             _this.deptData = JSON.parse(selectStr);
+            /** 触发子类的加载 */
+            this.depId = response.data.data.id;
+            console.log(this.$refs);
+            this.$refs.selectUser.getPagedData();
           } else {
             _this.$message.error();
             // 扩展使用
@@ -321,9 +326,10 @@
           }
         })
       },
+      /** 触发子类传值 */
       handleClick(data) {
-        console.log(data.id);
-        this.$emit('upDepId', data.id);
+        this.depId = data.id; // 向子类传入父类ID
+        this.$refs.selectUser.getPagedData();
       }
     }
   }

@@ -2,7 +2,7 @@
   <div class="usersCls">
       <div class="contentCls">
         <div class="mainTopCls">
-          {{userCompany}}在职人员{{totalCount}}人,其中<el-button type="text">未分配部门人员{{undistributedCount}}人</el-button>
+          {{userCompany}}在职人员{{postsCount}}人,其中<el-button type="text">未分配部门人员{{undistributedCount}}人</el-button>
           <p @upDepId='loadUser(id)' v-if=false></p>
         </div>
         <div class="toolbarCls">
@@ -14,8 +14,9 @@
                 <el-col :xs="8" :md="11" :lg="8" :xl="6">
                     {{usersLabelObj.labelStateTxt}}&nbsp;&nbsp;&nbsp;&nbsp; <el-select v-model="userState" placeholder="请选择">
                       <el-option :label='usersLabelObj.txtAll' value='' checked></el-option>
-                      <el-option :label='usersLabelObj.txtNormal' value='normal'></el-option>
-                      <el-option :label='usersLabelObj.txtDisable' value='disable'></el-option>
+                      <el-option :label='usersLabelObj.txtNormal' value='0'></el-option>
+                      <el-option :label='usersLabelObj.txtDisable' value='2'></el-option>
+                      <el-option :label='usersLabelObj.txtDeleted' value='1'></el-option>
                     </el-select>
                 </el-col>
                 <el-col :xs="8" :md="2" :lg="7" :xl="8">
@@ -140,10 +141,12 @@
 import { userGetAll } from '@/api/management'
 export default {
   name: 'table',
+  props: ['depId'],
   data() {
     return {
       userCompany: '华为公司',
       undistributedCount: 0, /* 不在部门中的员工人数*/
+      postsCount: 0, /* 在职人数统计*/
       searchPhoneORname: '', /* 根据姓名或电话查询*/
       userState: '', /* 根据状态查询*/
       ccsStateVal: '',
@@ -175,7 +178,7 @@ export default {
         labelStateTxt: '状态',
         txtAll: '全部',
         txtNormal: '正常',
-        txtDeleted: '删除',
+        txtDeleted: '已离职',
         txtDisable: '禁用',
         labelBtnOK: '确定',
         userCfgTitle: '新增用户',
@@ -193,6 +196,7 @@ export default {
   },
   mounted() {
     // 扩展代码
+    // this.getPagedData();
   },
   methods: {
     /* Begin: 分页必备 */
@@ -210,19 +214,28 @@ export default {
       const _this = this;
       var params = {
         pageIndex: _this.currentPage,
-        pageSize: _this.pagesize,
-        depId: _this.depId
+        pageSize: _this.pagesize
       }
+      if (_this.depId) {
+        params.query = {
+          depId: _this.depId
+        }
+      }
+      console.log(params);
       _this.isLoading = true;
       userGetAll(params).then(response => {
-        console.log(response);
         _this.isLoading = false;
         if (response.data.code === '0') {
           _this.userData = response.data.data.list;
-          _this.totalCount = 14;
+          _this.totalCount = response.data.data.totalCount;
           _this.undistributedCount = response.data.data.undistributedCount;
+          _this.postsCount = _this.totalCount - _this.undistributedCount;
         } else {
-          _this.$message.error();
+          _this.userData = [];
+          _this.totalCount = 0;
+          _this.undistributedCount = 0;
+          _this.postsCount = 0;
+          _this.$message.error('error');
           // 扩展使用
         }
       })
@@ -272,11 +285,7 @@ export default {
       return objCSSState[state];
     },
     /* 获取列表数据，代表查询*/
-    handleClick() {
-      this.getPagedData();
-    },
-    loadUser(id) {
-      this.$set(this, 'depId', id);
+    searchUsersFun() {
       this.getPagedData();
     }
   }

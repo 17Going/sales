@@ -48,11 +48,11 @@ export function departmentDelte(params) {
 
 /* BEGIN: 用户API接口 */
 // 用户列表数据接口
-export function userGetAll(query) {
+export function userGetAll(params) {
   return request({
     url: '/user/getAll',
     method: 'get',
-    data: query
+    params: params
   })
 }
 /* END: 用户API接口 */
