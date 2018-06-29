@@ -2,9 +2,9 @@
   <!-- EOS: 企业组织架构  Enterprise organizational structure -->
   <div class="EOSCls">
     <el-container v-loading='isLoading'>
-      <el-header>
-        <!--企业组织架构-->
-      </el-header>
+      <!-- <el-header>
+        企业组织架构
+      </el-header> -->
       <el-container>
         <div class='leftCls'>
           <el-aside >
@@ -19,9 +19,9 @@
                         <span class="el-dropdown-link" :title="data.depName" trigger="hover" @click='handleClick(data)'>{{getDeptName(data.depName)}}</span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item ><el-button type="text"  size="mini" @click="addDeptment(data)">[{{EOSLabelObj.btnAddText}}]</el-button></el-dropdown-item>
-                            <el-dropdown-item v-show="data.parentId !== 0"><el-button type="text"  size="mini" @click="editDeptment(data)">[{{EOSLabelObj.btnEditText}}]</el-button></el-dropdown-item>
-                            <el-dropdown-item v-show="data.parentId !== 0"><el-button type="text"  size="mini" @click="moveDeptment(data)">[{{EOSLabelObj.btnMoveText}}]</el-button></el-dropdown-item>
-                            <el-dropdown-item v-show="!data.children"><el-button type="text" size="mini" @click="delDeptment(data)">[{{EOSLabelObj.btnDelText}}]</el-button></el-dropdown-item>
+                            <el-dropdown-item v-if="data.parentId !== 0"><el-button type="text"  size="mini" @click="editDeptment(data)">[{{EOSLabelObj.btnEditText}}]</el-button></el-dropdown-item>
+                            <el-dropdown-item v-if="data.parentId !== 0"><el-button type="text"  size="mini" @click="moveDeptment(data)">[{{EOSLabelObj.btnMoveText}}]</el-button></el-dropdown-item>
+                            <el-dropdown-item v-if="!data.children"><el-button type="text" size="mini" @click="delDeptment(data)">[{{EOSLabelObj.btnDelText}}]</el-button></el-dropdown-item>
                           </el-dropdown-menu>
                         </el-dropdown>
                     </span>
@@ -30,7 +30,14 @@
         </div>
         <el-main>
           <div>
-             <enterprise-user :depId='depId' ref="selectUser"></enterprise-user>
+              <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+                <el-tab-pane label="配置用户" name="userTab">
+                  <enterprise-user :depId='depId' ref="selectUser"></enterprise-user>
+                </el-tab-pane>
+                <el-tab-pane label="配置职位" name="postsTab">
+                  <corporatePosts :depId='depId' :depName='depName' ref="selectPosts"></corporatePosts>
+                </el-tab-pane>
+              </el-tabs>
           </div>
           <div class='depDailog'>
               <div class='depCfgCls'>
@@ -102,11 +109,12 @@
   // import the component
   import Treeselect from '@riophae/vue-treeselect'
   import enterpriseUser from '@/views/management/enterpriseUser'
+  import corporatePosts from '@/views/management/corporatePosts'
   // import the styles
   import '@riophae/vue-treeselect/dist/vue-treeselect.css'
   export default {
     name: 'documentation',
-    components: { Treeselect, enterpriseUser },
+    components: { Treeselect, enterpriseUser, corporatePosts },
     mounted() {
       this.getLeftList();
     },
@@ -120,7 +128,9 @@
         callback();
       }
       return {
+        activeName: 'userTab',
         depId: '', // 用于传值(用户或者职位)
+        depName: '', // 用于传值(用户或者职位)
         isLoading: false,
         isCfgLoading: false,
         EOSForm: {},
@@ -172,6 +182,7 @@
             _this.deptData = JSON.parse(selectStr);
             /** 触发子类的加载 */
             this.depId = response.data.data.id;
+            this.depName = response.data.data.depName;
             console.log(this.$refs);
             this.$refs.selectUser.getPagedData();
           } else {
@@ -329,7 +340,9 @@
       /** 触发子类传值 */
       handleClick(data) {
         this.depId = data.id; // 向子类传入父类ID
-        this.$refs.selectUser.getPagedData();
+        this.depName = data.depName; // 向子类传入父类名称
+        this.$refs.selectUser.getPagedData(); // 刷新用户数据
+        this.$refs.selectPosts.getPagedData(); // 刷新职位信息
       }
     }
   }
@@ -367,7 +380,9 @@
     .el-scrollbar__view .el-select-dropdown__list{
       height: 250px;
     }
-    
+    .custom-tree-node{
+      width: 200px;
+    }
     
   }
 </style>
