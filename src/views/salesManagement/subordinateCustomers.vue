@@ -1,9 +1,20 @@
 <template>
   <div class="app-container">
 
-    <el-table :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
+    <el-table :data="list" v-loading.body="listLoading"
+              border fit highlight-current-row
+              style="width: 100%"
+              @selection-change="handleSelectionChange"
+              :default-sort = "{prop: 'customerName', order: 'descending'}"
+    >
+    <!--默认排序-->
+      <el-table-column
+        type="selection"
+        width="55">
+      </el-table-column>
 
-      <el-table-column align="center" label="客户名称" width="80">
+      <el-table-column align="center" label="客户名称" width="120"
+                       sortable  prop="customerName">
         <template slot-scope="scope">
           <span>{{scope.row.customerName}}</span>
         </template>
@@ -15,13 +26,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="120px" align="center" label="剩余保护天数">
+      <el-table-column width="130" align="center" label="剩余保护天数"
+                       sortable prop="lastProtectionDays">
         <template slot-scope="scope">
           <span>{{scope.row.lastProtectionDays}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column width="100px" label="最新跟进">
+      <el-table-column width="220" label="最新跟进"
+                       sortable prop="follow_up">
         <template slot-scope="scope">
           <span>{{scope.row.follow_up}}</span>
         </template>
@@ -51,13 +64,15 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="电话跟进" width="120">
+      <el-table-column align="center" label="电话跟进" width="120"
+                       sortable  prop="phoneFollow_up">
         <template slot-scope="scope">
           <span>{{scope.row.phoneFollow_up}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="拜访跟进" width="120">
+      <el-table-column align="center" label="拜访跟进" width="120"
+                       sortable prop="visitFollow_up">
         <template slot-scope="scope">
           <span>{{scope.row.visitFollow_up}}</span>
         </template>
@@ -95,6 +110,11 @@
       </el-table-column>
 
     </el-table>
+
+    <div class="pagination-container">
+      <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
@@ -105,12 +125,16 @@
     name: 'inlineEditTable',
     data() {
       return {
+        tableKey: 0,
         list: null,
+        total: null,
         listLoading: true,
         listQuery: {
           page: 1,
-          limit: 10
-        }
+          limit: 20,
+          importance: undefined
+        },
+        importanceOptions: [1, 2, 3]
       }
     },
     filters: {
@@ -138,6 +162,7 @@
 
             return v
           })
+          this.total = 100 // 先定死
           this.listLoading = false
         })
       },
@@ -156,6 +181,16 @@
           message: 'The title has been edited',
           type: 'success'
         })
+      },
+      handleSelectionChange(val) {
+      },
+      handleSizeChange(val) {
+        this.listQuery.limit = val
+        this.getList()
+      },
+      handleCurrentChange(val) {
+        this.listQuery.page = val
+        this.getList()
       }
     }
   }
