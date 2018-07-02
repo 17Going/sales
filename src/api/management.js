@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 /* BEGIN: 部门API接口 */
 // 部门列表
-export function departmentGetAll() {
+export function departmentGetList() {
   return request({
     url: '/department/getAll',
     method: 'get'
@@ -48,9 +48,9 @@ export function departmentDelte(params) {
 
 /* BEGIN: 用户API接口 */
 // 用户列表数据接口
-export function userGetAll(params) {
+export function userGetList(params) {
   return request({
-    url: '/user/getAll',
+    url: '/user/list',
     method: 'get',
     params: params
   })

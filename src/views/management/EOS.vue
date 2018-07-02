@@ -10,12 +10,24 @@
           <el-aside >
             <el-tree :data="EOSData" node-key="id"
                      default-expand-all :expand-on-click-node="false">
-                    <span class="custom-tree-node" slot-scope="{ node, data }">
-                      <el-dropdown>
-                        <!-- <span >
+                    <span class="custom-tree-node" slot-scope="{ node, data }" @mouseleave="asideNodeOut(data)">
+                     <!-- <span >
                           下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>
+                          class='divFloatCls'
                         </span>
                          @mouseover="asideNodeOver(data)" @mouseout="asideNodeOut(data)" -->
+                         <span :title="data.depName" @mouseover="asideNodeOver($event, data)" trigger="hover" @click='handleClick(data)'>{{getDeptName(data.depName)}}</span>
+                          <span class='divFloatCls' v-bind:style='getPositionCls' v-show="data.isShowOpera" >
+                            <ul>
+                              <li ><el-button type="text"  size="mini" @click="addDeptment(data)">[{{EOSLabelObj.btnAddText}}]</el-button></li>
+                              <li v-if="data.parentId !== 0"><el-button type="text"  size="mini" @click="editDeptment(data)">[{{EOSLabelObj.btnEditText}}]</el-button></li>
+                              <li v-if="data.parentId !== 0"><el-button type="text"  size="mini" @click="moveDeptment(data)">[{{EOSLabelObj.btnMoveText}}]</el-button></li>
+                              <li v-if="!data.children"><el-button type="text" size="mini" @click="delDeptment(data)">[{{EOSLabelObj.btnDelText}}]</el-button></li>
+                            </ul>
+                          </span>
+                   
+                     
+                     <!-- <el-dropdown> 
                         <span class="el-dropdown-link" :title="data.depName" trigger="hover" @click='handleClick(data)'>{{getDeptName(data.depName)}}</span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item ><el-button type="text"  size="mini" @click="addDeptment(data)">[{{EOSLabelObj.btnAddText}}]</el-button></el-dropdown-item>
@@ -23,7 +35,7 @@
                             <el-dropdown-item v-if="data.parentId !== 0"><el-button type="text"  size="mini" @click="moveDeptment(data)">[{{EOSLabelObj.btnMoveText}}]</el-button></el-dropdown-item>
                             <el-dropdown-item v-if="!data.children"><el-button type="text" size="mini" @click="delDeptment(data)">[{{EOSLabelObj.btnDelText}}]</el-button></el-dropdown-item>
                           </el-dropdown-menu>
-                        </el-dropdown>
+                        </el-dropdown>-->
                     </span>
             </el-tree>
           </el-aside>
@@ -102,10 +114,13 @@
         </el-main>
       </el-container>
     </el-container>
+    <div id='floatDept'>
+
+    </div>
   </div>
 </template>
 <script>
-  import { departmentCreate, departmentDelte, departmentEdit, departmentGetAll } from '@/api/management'
+  import { departmentCreate, departmentDelte, departmentEdit, departmentGetList } from '@/api/management'
   // import the component
   import Treeselect from '@riophae/vue-treeselect'
   import enterpriseUser from '@/views/management/enterpriseUser'
@@ -165,7 +180,22 @@
           confirmInfo: '确认删除?',
           confirmTitle: '确认?',
           noCfirmInfo: '已取消删除'
+        },
+        positionCls: {
+          position: 'absolute',
+          'z-index': '9999',
+          padding: '0px 10px',
+          border: '0px',
+          'background-color': '#fff',
+          '-moz-box-shadow': '2px 2px 5px #333333',
+          '-webkit-box-shadow': '2px 2px 5px #333333',
+          'box-shadow': '2px 2px 5px #333333'
         }
+      }
+    },
+    computed: {
+      getPositionCls: function() {
+        return this.positionCls;
       }
     },
     methods: {
@@ -173,7 +203,7 @@
       getLeftList() {
         const _this = this;
         _this.isLoading = true;
-        departmentGetAll().then(response => {
+        departmentGetList().then(response => {
           _this.isLoading = false;
           if (response.data.code === '0') {
             _this.EOSData = JSON.parse(JSON.stringify([response.data.data]));
@@ -195,7 +225,7 @@
       getSelectList() {
         const _this = this;
         // _this.isLoading = true;
-        departmentGetAll().then(response => {
+        departmentGetList().then(response => {
           //  _this.isLoading = false;
           if (response.data.code === '0') {
             window.abc = response.data.data;
@@ -207,12 +237,31 @@
       },
       // 处理名称过长情况
       getDeptName(name) {
-        return name.length > 20 ? name.substr(0, 20) + '...' : name;
+        return name;
+        // return name.length > 20 ? name.substr(0, 20) + '...' : name;
       },
-      asideNodeOver(obj) {
+      getDivPosition(x, y) {
+        console.log(this.positionCls);
+        return { left: x, top: y };
+      },
+      asideNodeOver(ev, obj) {
+        /*  clearTimeout(window.t);
+        window.t = setTimeout(() => {
+          this.$set(obj, 'isShowOpera', true)
+        }, 500); */
+        var event = ev || window.event;
+        if (event) {
+          console.log(event.x, event.y);
+          const positionObj = this.getDivPosition(event.x, event.y);
+          Object.assign(this.positionCls, positionObj);
+        }
         this.$set(obj, 'isShowOpera', true)
       },
       asideNodeOut(obj) {
+        /* if (window.t != null) {
+          clearTimeout(window.t);
+        }
+        window.t = null; */
         this.$set(obj, 'isShowOpera', false)
       },
       // 配置窗口关闭
@@ -366,12 +415,18 @@
       text-align: center;
     }
     .leftCls {
-      height: 100%;
+      width: 20%;
+      height: 80%;
       border-right: 2px #e5e8ea solid;
-      .el-aside { 
-        overflow-y: auto;
-        overflow-x: auto;
+      overflow-y: auto;
+      overflow-x: auto;
+      .el-aside {
+        width:100%;
       }
+      .el-tree>.el-tree-node{
+        min-width:100%;
+        display: inline-block !important;
+      }     
     }
     .el-scrollbar{
       width: 50%;
@@ -380,8 +435,23 @@
     .el-scrollbar__view .el-select-dropdown__list{
       height: 250px;
     }
-    .custom-tree-node{
+    .el-dropdown{
       width: 200px;
+    }
+    .el-tree-node__content .is-active{
+       font-size: 16px;
+    }
+    .el-tree-node__content:hover{
+      font-size: 16px;
+    }
+    .divFloatCls{
+      ul { 
+        margin: 1px;
+        padding: 0px;
+      }
+      li {
+        list-style-type:none;
+      }
     }
     
   }

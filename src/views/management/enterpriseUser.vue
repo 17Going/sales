@@ -138,7 +138,7 @@
   </div>
 </template>
 <script>
-import { userGetAll } from '@/api/management'
+import { userGetList } from '@/api/management'
 export default {
   name: 'table',
   props: ['depId'],
@@ -223,7 +223,7 @@ export default {
       }
       console.log(params);
       _this.isLoading = true;
-      userGetAll(params).then(response => {
+      userGetList(params).then(response => {
         _this.isLoading = false;
         if (response.data.code === '0') {
           _this.userData = response.data.data.list;
