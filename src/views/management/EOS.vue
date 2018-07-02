@@ -17,7 +17,7 @@
                         </span>
                          @mouseover="asideNodeOver(data)" @mouseout="asideNodeOut(data)" -->
                          <span :title="data.depName" @mouseover="asideNodeOver($event, data)" trigger="hover" @click='handleClick(data)'>{{getDeptName(data.depName)}}</span>
-                          <span class='divFloatCls' v-bind:style='getPositionCls' v-show="data.isShowOpera" >
+                          <span class='divFloatCls' v-bind:style="positionCls" v-show="data.isShowOpera" :ref="data.id" >
                             <ul>
                               <li ><el-button type="text"  size="mini" @click="addDeptment(data)">[{{EOSLabelObj.btnAddText}}]</el-button></li>
                               <li v-if="data.parentId !== 0"><el-button type="text"  size="mini" @click="editDeptment(data)">[{{EOSLabelObj.btnEditText}}]</el-button></li>
@@ -181,6 +181,7 @@
           confirmTitle: '确认?',
           noCfirmInfo: '已取消删除'
         },
+        userLeft: '0px',
         positionCls: {
           position: 'absolute',
           'z-index': '9999',
@@ -193,12 +194,15 @@
         }
       }
     },
-    computed: {
+    /* computed: {
       getPositionCls: function() {
         return this.positionCls;
       }
-    },
+    },*/
     methods: {
+      getPositionCls: function() {
+        return this.positionCls;
+      },
       // 获取列表的数据
       getLeftList() {
         const _this = this;
@@ -213,7 +217,6 @@
             /** 触发子类的加载 */
             this.depId = response.data.data.id;
             this.depName = response.data.data.depName;
-            console.log(this.$refs);
             this.$refs.selectUser.getPagedData();
           } else {
             _this.$message.error();
@@ -240,22 +243,25 @@
         return name;
         // return name.length > 20 ? name.substr(0, 20) + '...' : name;
       },
-      getDivPosition(x, y) {
-        console.log(this.positionCls);
-        return { left: x, top: y };
+      getDivPosition(event) {
+        let x = event.target.offsetLeft + event.target.offsetWidth;
+        let y = event.target.offsetTop;
+        console.log(event.clientX, event.clientY, '-------');
+        x = x > 200 ? 200 : x;
+        y = y > event.clientY ? event.clientY : y;
+        console.log(x, y);
+        console.log('******************');
+        return { left: (x + 10) + 'px', top: y + 'px' };
       },
       asideNodeOver(ev, obj) {
-        /*  clearTimeout(window.t);
-        window.t = setTimeout(() => {
-          this.$set(obj, 'isShowOpera', true)
-        }, 500); */
+        this.$set(obj, 'isShowOpera', true);
         var event = ev || window.event;
+        console.log(event)
         if (event) {
-          console.log(event.x, event.y);
-          const positionObj = this.getDivPosition(event.x, event.y);
-          Object.assign(this.positionCls, positionObj);
+          const positionObj = this.getDivPosition(event);
+          this.positionCls = Object.assign({}, this.positionCls, positionObj);
         }
-        this.$set(obj, 'isShowOpera', true)
+        console.log(this.positionCls.left, this.positionCls.top);
       },
       asideNodeOut(obj) {
         /* if (window.t != null) {
