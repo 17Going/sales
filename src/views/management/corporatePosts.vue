@@ -107,7 +107,7 @@ export default {
   },
   mounted() {
     // 扩展代码
-    this.depName = '唐唐软件公司'
+    // this.depName = '唐唐软件公司'
     this.getPagedData();
   },
   methods: {
