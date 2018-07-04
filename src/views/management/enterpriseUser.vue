@@ -2,8 +2,7 @@
   <div class="usersCls">
       <div class="contentCls">
         <div class="mainTopCls">
-          {{userCompany}}在职人员{{postsCount}}人,其中<el-button type="text">未分配部门人员{{undistributedCount}}人</el-button>
-          <p @upDepId='loadUser(id)' v-if=false></p>
+          {{depName}}在职人员{{postsCount}}人,其中<el-button type="text">未分配部门人员{{undistributedCount}}人</el-button>
         </div>
         <div class="toolbarCls">
           <div class="demo-input-suffix">
@@ -141,10 +140,9 @@
 import { userGetList } from '@/api/management'
 export default {
   name: 'table',
-  props: ['depId'],
+  props: ['depId', 'depName'],
   data() {
     return {
-      userCompany: '华为公司',
       undistributedCount: 0, /* 不在部门中的员工人数*/
       postsCount: 0, /* 在职人数统计*/
       searchPhoneORname: '', /* 根据姓名或电话查询*/
@@ -209,6 +207,25 @@ export default {
       this.currentPage = val;
       this.getPagedData();
     },
+    // 获取所有的查询参数，如果有新加的，只需手动添加1个查询属性即可
+    getQueryParams() {
+      // 定义查询对象，对象有值时对其赋值
+      const query = {
+        'depId': '',
+        'userName': '',
+        'phone': '',
+        'status': ''
+      }
+      // 循环获取值不为空的查询参数
+      for (const queryKey in query) {
+        if (this[queryKey]) {
+          query[queryKey] = this[queryKey];
+        } else {
+          delete query[queryKey];
+        }
+      }
+      return query;
+    },
     /* 获取列表数据，代表查询*/
     getPagedData() {
       const _this = this;
@@ -216,12 +233,11 @@ export default {
         pageIndex: _this.currentPage,
         pageSize: _this.pagesize
       }
-      if (_this.depId) {
-        params.query = {
-          depId: _this.depId
-        }
+      const queryObj = _this.getQueryParams();
+      if (JSON.stringify(queryObj) !== '{}') {
+        params.query = JSON.stringify(queryObj);
+        console.log(typeof params.query);
       }
-      console.log(params);
       _this.isLoading = true;
       userGetList(params).then(response => {
         _this.isLoading = false;

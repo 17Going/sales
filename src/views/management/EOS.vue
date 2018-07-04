@@ -42,9 +42,9 @@
         </div>
         <el-main>
           <div>
-              <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+              <el-tabs v-model="activeName" type="card" >
                 <el-tab-pane label="配置用户" name="userTab">
-                  <enterprise-user :depId='depId' ref="selectUser"></enterprise-user>
+                  <enterprise-user :depId='depId' :depName='depName' ref="selectUser"></enterprise-user>
                 </el-tab-pane>
                 <el-tab-pane label="配置职位" name="postsTab">
                   <corporatePosts :depId='depId' :depName='depName' ref="selectPosts"></corporatePosts>

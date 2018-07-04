@@ -259,7 +259,7 @@ export const asyncRouterMap = [
     component: Layout,
     children: [{
       path: '',
-      component: () => import('@/views/productList/index'),
+      component: () => import('@/views/productList/enterpriseProduct'),
       name: 'productList',
       meta: {
         title: 'productList',
