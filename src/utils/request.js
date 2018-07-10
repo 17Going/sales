@@ -4,6 +4,23 @@ import store from '@/store'
 import { getToken, removeToken } from '@/utils/auth'
 // import router from '@/router'
 // import qs from 'qs'
+/**
+ * 处理UTL截取和添加app
+ * @param url
+ * @returns {*}
+ */
+const getUrl = function(url) {
+  if (url.startsWith('/api')) {
+    url = url.slice(0, 1);
+  } else if (url.startsWith('api')) {
+    // 此处不需要处理 确定为正确的url
+  } else if (url.startsWith('/')) {
+    url = 'api' + url
+  } else {
+    url = 'api/' + url
+  }
+  return url;
+}
 
 // create an axios instance
 const service = axios.create({
@@ -20,10 +37,8 @@ service.interceptors.request.use(config => {
     // qs.stringify(config.data)
     // service.post(config.url, config.params)
   }
-  if (config.url.indexOf('api') === -1) {
-    config.url = 'api' + config.url
-  }
-  console.log(config.data)
+  config.url = getUrl(config.url);
+
   if (store.getters.token) {
     config.headers['token'] = getToken() // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
   }
