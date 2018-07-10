@@ -280,7 +280,7 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'customer',
-        component: () => import('@/views/enterprise/customer/index'),
+        component: () => import('@/views/enterprise/customer/setIndex'),
         name: 'customer',
         meta: {
           title: 'enterprise_customer'
