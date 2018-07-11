@@ -1,45 +1,50 @@
 <template>
   <div class="postsCls">
       <div class="contentCls">
+      <!--
         <div class="mainTopCls">
-          <p>当前部门是：{{depName}}</p>
+          <p>{{postsLabelObj.titleTxt}}{{depName}}</p>
         </div>
-
+        -->
         <div class="toolbarCls">
           <div class="demo-input-suffix">
             <el-row class='operaCls' :gutter="20">
-                <el-col :span='12'>
-                    <el-input placeholder='职位名称'></el-input>
+                <el-col :span='5'>
+                    <el-input :placeholder='postsLabelObj.jobName'></el-input>
                 </el-col>
-                <el-col :span='12'>
+                <el-col :span='10'>
                     <el-button type="danger" @click="addPostsFun()">添加职位</el-button>
+                    <el-button type="danger" @click="delPostsFun()">删除职位</el-button>
                 </el-col>
             </el-row>
+            <!-- 扩展职位可以绑定部门
             <el-row>
                 <el-col :span='24'>
                     <el-button type="danger" @click="bindPostsFun()">绑定</el-button>
                 </el-col>
-            </el-row>
+            </el-row> -->
           </div>
         </div>
 
         <div class="tableCls">
             <el-table v-loading="isLoading" :data="postsData" 
-                style="width: 100%" max-height="40%" border>
+                style="width: 100%"  border>
                  <el-table-column
                 type="selection"
                 width="55">
                 </el-table-column>
+                <!--
               <el-table-column  prop="depName" :label="postsLabelObj.depName" >
                 <template slot-scope='scope'>
                   <span type="text">{{scope.row.depName}}</span>
                 </template>
-              </el-table-column>
+              </el-table-column>-->
 
               <el-table-column prop="jobName" :label="postsLabelObj.jobName">
                 <template slot-scope='scope'>
                   <span v-if='!scope.row.editJobName'>
-                    {{scope.row.jobName}}<el-button type="text" @click="unbindPosts(scope.row)" title='解除职位与所有部门的绑定'>[解绑职位]</el-button>
+                    {{scope.row.jobName}}
+                    <!-- <el-button type="text" @click="unbindPosts(scope.row)" title='解除职位与所有部门的绑定'>[解绑职位]</el-button> -->
                    </span>
                    <span v-if='scope.row.editJobName' >
                     <el-input v-model='scope.row.editJobName' ></el-input>
@@ -50,11 +55,11 @@
               <el-table-column  prop="userOpera" :label="postsLabelObj.userOpera" width="160">
                 <template slot-scope='scope'>
                   <el-row class='operaCls' :gutter="20">
-                    <el-col :span='12'>
+                    <!-- <el-col :span='12'>
                         <el-button type="text" @click="bindPosts(scope.row)">[绑定部门]</el-button>
-                    </el-col>
+                    </el-col> -->
                 
-                    <el-col :span='12'>
+                    <el-col :span='24'>
                         <el-button v-if='!scope.row.editJobName' type="text" @click="modifyPostsFun(scope.row)">[修改]</el-button>
                         <el-button v-if='scope.row.editJobName' type="text" @click="modifyApply(scope.row)">[确认修改]</el-button>
                     </el-col>
@@ -95,8 +100,9 @@ export default {
       dialogBindCfgForm: false, // 绑定部门配置form
       userCompany: '华为公司',
       postsLabelObj: {
+        titleTxt: '当前部门是：',
         depName: '部门',
-        jobName: '职位',
+        jobName: '职位名称',
         userOpera: '操作',
         cfgTitle: '绑定部门',
         labelName: '部门名称'
@@ -199,8 +205,11 @@ export default {
   }
 }
 </script>
-<style>
-  .postsCls .toolbarCls{
+<style rel="stylesheet/scss" lang="scss" scoped>
+  .postsCls{
+      margin: 20px;
+      .toolbarCls{
         margin-bottom: 10px;
+      }
     }
 </style>

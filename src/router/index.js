@@ -80,7 +80,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/management/permissionGroup'),
         name: 'permissionGroup',
         meta: { title: 'permissionGroup', icon: 'guide', noCache: true }
-      }, {
+      }, /* {
         path: 'user',
         component: () => import('@/views/management/user'),
         name: 'usetNnme',
@@ -88,9 +88,9 @@ export const asyncRouterMap = [
           title: 'usetNnme',
           icon: 'user'
         }
-      }, {
+      }, */ {
         path: 'position',
-        component: () => import('@/views/management/position'),
+        component: () => import('@/views/management/corporatePosts'),
         name: 'position',
         meta: {
           title: 'position',

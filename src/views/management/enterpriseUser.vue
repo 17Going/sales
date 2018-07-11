@@ -34,19 +34,19 @@
 
               <el-table-column sortable  prop="phone" :label="usersLabelObj.userPhone">
                 <template slot-scope='scope'>
-                  <p>{{scope.row.phone}}</p>
+                  <p>{{(scope.row.phone || "")}}</p>
                 </template>
               </el-table-column>
 
               <el-table-column sortable  prop="userName" :label="usersLabelObj.userName" >
                 <template slot-scope='scope'>
-                  <el-button type="text">{{scope.row.userName}}</el-button>
+                  <el-button type="text">{{(scope.row.userName || "")}}</el-button>
                 </template>
               </el-table-column>
 
               <el-table-column  prop="depName" :label="usersLabelObj.userDpm" >
                 <template slot-scope='scope'>
-                  <p>{{scope.row.depName+"["+scope.row.jobName+"]"}}</p>
+                  <p>{{scope.row.depName + (scope.row.jobName ? "[" + scope.row.jobName + "]" : "")}}</p>
                 </template>
               </el-table-column>
 
@@ -58,13 +58,13 @@
 
               <el-table-column  prop="email" :label="usersLabelObj.userEmail">
                 <template slot-scope='scope'>
-                  <p>{{scope.row.email}}</p>
+                  <p>{{scope.row.email || ""}}</p>
                 </template>
               </el-table-column>
 
               <el-table-column sortable prop="cap" :label="usersLabelObj.userCapacity" >
                 <template slot-scope='scope'>
-                  <p>{{scope.row.cap}}</p>
+                  <p>{{scope.row.cap || 0}}</p>
                 </template>
               </el-table-column>
 
@@ -78,13 +78,13 @@
                 <template slot-scope='scope'>
                   <el-row class='operaCls' :gutter="20">
                       <el-col :span='8'>
-                        <el-button type="text" @click="modifyUserFun(scope.row)">[修改]</el-button>
+                        <el-button type="text" @click="modifyUserFun(scope.row)">{{usersLabelObj.labelBtnEdit}}</el-button>
                       </el-col>
                       <el-col :span='8'>
-                        <el-button type="text">[禁用]</el-button>
+                        <el-button type="text">{{usersLabelObj.labelBtnDis}}</el-button>
                       </el-col>
                       <el-col :span='8'>
-                        <el-button type="text">[离职]</el-button>
+                        <el-button type="text">{{usersLabelObj.labelBtnDel}}</el-button>
                       </el-col>
                   </el-row>
 
@@ -105,10 +105,21 @@
         <div class="addWinCls">
             <el-dialog :visible.sync="dialogUserCfgForm" @open='openUserCfgWin' @close="closeUserCfgWin">
                 <span slot="title" class="el-dialog__title">{{usersLabelObj.userCfgTitle}}</span>
-                <el-form :model="userCfgForm" :rules="userCfgRules" ref="userCfgForm" label-width="200px" label-position="top">
+                <el-form :model="userCfgForm" :rules="userCfgRules" ref="userCfgForm" label-width="138px" label-position="left">
                 
                   <el-form-item :label="usersLabelObj.labelName" >
-                    <el-input   v-model='userCfgForm.userName'></el-input>
+                    <el-input v-model='userCfgForm.userName'></el-input>
+                  </el-form-item>
+
+                   <el-form-item :label="usersLabelObj.labelJob">
+                     <el-select class="filter-item" v-model="userCfgForm.jobName" placeholder="Please select" @focus='getJobFun' @change='newJobFun'>
+                      <el-option v-for="item in jobData" :key="item.id" :label="item.jobName" :value="item">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+
+                  <el-form-item label="" v-if="isShowJob">
+                    <el-input v-model='userCfgForm.jobNewName'></el-input>
                   </el-form-item>
 
                   <el-form-item :label="usersLabelObj.labelPhone" >
@@ -129,6 +140,7 @@
                  
                 </el-form>
                 <div slot="footer" class="dialog-footer">
+                  <el-button type="danger" @click="submitUserForm('userCfgForm')">{{usersLabelObj.labelBtnOK}}</el-button>
                   <el-button type="danger" @click="submitUserForm('userCfgForm')">{{usersLabelObj.labelBtnOK}}</el-button>
                 </div>
               </el-dialog>
@@ -153,12 +165,17 @@ export default {
       totalCount: 1,
       timeVal: [new Date(), new Date()], /* 默认当天时间*/
       // 配置窗口的属性值
+      // 获取所有的职位
+      jobData: [],
+      isShowJob: false, // 控制配置职位的显示隐藏
       dialogUserCfgForm: false, /* 控制窗口显示/隐藏 */
       userCfgForm: {
         userName: '',
-        userPhone: '',
-        userEmail: '',
-        userCapacity: ''
+        phone: '',
+        email: '',
+        cap: '',
+        jobNewName: '',
+        jobName: ''
       },
       userCfgRules: {
         userName: [{ required: true, message: '请输入名称', trigger: 'blur' }]
@@ -179,10 +196,14 @@ export default {
         txtDeleted: '已离职',
         txtDisable: '禁用',
         labelBtnOK: '确定',
+        labelBtnEdit: '[修改]',
+        labelBtnDis: '[禁用]',
+        labelBtnDel: '[离职]',
         userCfgTitle: '新增用户',
         userAddTitle: '新增用户',
         userEditTitle: '修改用户',
         labelName: '姓名',
+        labelJob: '职位',
         labelPhone: '手机号码',
         labelEmail: '邮箱',
         labelCapacity: '客户池容量',
@@ -257,22 +278,74 @@ export default {
       })
     },
     /* END: 分页必备 */
+    // 获取所有职位的取数方法
+    getJobFun() {
+      // 等待取数归位
+      if (this.isFrist) {
+        this.jobData = [{
+          id: 1,
+          jobName: '董事长'
+        }, {
+          id: 2,
+          jobName: 'CTO'
+        }, {
+          id: 3,
+          jobName: 'CEO'
+        }, {
+          id: 4,
+          jobName: '部门经理'
+        }, {
+          id: 5,
+          jobName: '组长'
+        }];
+        this.jobData.unshift({
+          id: '-1',
+          jobName: '-- 新建职位 --'
+        });
+        this.jobData.unshift({
+          id: '',
+          jobName: '-- NONE --'
+        });
+        this.isFrist = false;
+      }
+    },
+    // 新建职位接口
+    newJobFun(item) {
+      const val = item.id;
+      if (val === '') {
+        this.isShowJob = false;
+      } else {
+        this.isShowJob = true;
+        if (val === '-1') {
+          this.userCfgForm.jobName = '-- 新建职位 --';
+          this.userCfgForm.jobNewName = '';
+        } else {
+          this.userCfgForm.jobName = item.jobName;
+          this.userCfgForm.jobNewName = item.jobName;
+        }
+      }
+    },
     addUsersFun() {
       this.usersLabelObj.userCfgTitle = this.usersLabelObj.userAddTitle;
       this.dialogUserCfgForm = true;
+      this.isFrist = true;
     },
     modifyUserFun(records) {
       this.userCfgForm = records;
       this.usersLabelObj.userCfgTitle = this.usersLabelObj.userEditTitle;
       this.dialogUserCfgForm = true;
+      this.isFrist = true;
     },
     closeUserCfgWin() {
       this.userCfgForm = {
         userName: '',
         phone: '',
         email: '',
-        cap: ''
+        cap: '',
+        jobNewName: '',
+        jobName: ''
       }
+      this.jobData = [];
       this.$refs['userCfgForm'].resetFields();
       this.getPagedData();
     },
@@ -307,54 +380,55 @@ export default {
   }
 }
 </script>
-<style>
+<style rel="stylesheet/scss" lang="scss" scoped>
   .usersCls {
-   
-  }
-  .usersCls .mainTopCls{
-    margin-left: 26px;
-  }
-  .usersCls .contentCls{
+   .mainTopCls{
+      margin-left: 26px;
+    }
+   .contentCls{
       border-radius:3px;
       background:rgba(255,255,255,1);
+      .tableCls{
+        padding: 9px 26px 20px 26px;
+        .el-table th{
+          background-color: #f7f7f7;
+        }
+        .el-dialog__header{
+          background-color: #f7f7f7;
+        }
+        .operaCls{
+          text-align: center;
+        }
+      }
+      .toolbarCls{
+        padding:15px 26px 5px 26px;
+        text-align: left;
+        .el-input{
+          width: 210px;
+        }
+        .newTbarCls{
+            margin-top: 15px;
+        }
+        .el-date-editor{
+          float: right;
+        }
+      }
+      .el-cm {
+          width: 100%;
+          margin-top:10px;
+          background:rgba(255,255,255,1);
+          font-size:18px;
+          font-family:MicrosoftYaHei;
+          color:rgba(41,38,38,1);
+      }
+      .el-pagination{
+          text-align: center;
+      }
+      .addWinCls{
+        .el-select{
+          width: 100%;
+        }
+      }
     }
-   
-  .usersCls .contentCls  .tableCls{
-    padding: 9px 26px 20px 26px;
-  }
-  .usersCls .contentCls .toolbarCls{
-     padding:15px 26px 5px 26px;
-     text-align: left;
-  }
-  .usersCls .contentCls .toolbarCls .el-input{
-     width: 210px;
-  }
-  .usersCls .contentCls .toolbarCls .newTbarCls{
-      margin-top: 15px;
-  }
-  .usersCls .contentCls .tableCls.el-table th{
-    background-color: #f7f7f7;
-  }
-  .usersCls .contentCls .tableCls .el-dialog__header{
-    background-color: #f7f7f7;
-  }
-  .usersCls .contentCls .tableCls .operaCls{
-    text-align: center;
-  }
-  .usersCls .toolbarCls .el-date-editor{
-    float: right;
-  }
- 
-  .usersCls .contentCls .el-cm {
-      width: 100%;
-      margin-top:10px;
-      background:rgba(255,255,255,1);
-      font-size:18px;
-      font-family:MicrosoftYaHei;
-      color:rgba(41,38,38,1);
-  }
- 
-  .usersCls .contentCls .el-pagination{
-      text-align: center;
   }
 </style>

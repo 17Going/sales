@@ -42,14 +42,15 @@
         </div>
         <el-main>
           <div>
-              <el-tabs v-model="activeName" type="card" >
+            <enterprise-user :depId='depId' :depName='depName' ref="selectUser"></enterprise-user>
+            <!-- <el-tabs v-model="activeName" type="card" >
                 <el-tab-pane label="配置用户" name="userTab">
                   <enterprise-user :depId='depId' :depName='depName' ref="selectUser"></enterprise-user>
                 </el-tab-pane>
                 <el-tab-pane label="配置职位" name="postsTab">
                   <corporatePosts :depId='depId' :depName='depName' ref="selectPosts"></corporatePosts>
                 </el-tab-pane>
-              </el-tabs>
+              </el-tabs>-->
           </div>
           <div class='depDailog'>
               <div class='depCfgCls'>
@@ -477,6 +478,9 @@
         min-width:100%;
         display: inline-block !important;
       }     
+    }
+    .el-main{
+      padding-top: 0px;
     }
     .el-scrollbar{
       width: 50%;
