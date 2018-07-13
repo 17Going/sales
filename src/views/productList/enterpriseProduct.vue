@@ -83,31 +83,89 @@
         <div class="addWinCls">
             <el-dialog :visible.sync="dialogCfgForm" @open='openCfgWin' @close="closeCfgWin">
                 <span slot="title" class="el-dialog__title">{{productLabelObj.cfgTitle}}</span>
-                <el-form :model="cfgForm" :rules="cfgRules" ref="cfgForm" label-position="top">
+                <el-form :model="cfgForm" :rules="cfgRules" ref="cfgForm" label-width="80px" label-position="left">
                 
-                  <el-form-item :label="productLabelObj.pName" >
-                    <el-input   v-model='cfgForm.pName'></el-input>
-                  </el-form-item>
+                  <el-row>
+                    <el-col :span="11">
+                      <el-form-item :label="productLabelObj.pName" >
+                        <el-input   v-model='cfgForm.pName'></el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="11">
+                      <el-form-item :label="productLabelObj.pNumber" >
+                        <el-input   v-model='cfgForm.pNumber'></el-input>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
 
-                  <el-form-item :label="productLabelObj.pNumber" >
-                    <el-input   v-model='cfgForm.pNumber'></el-input>
-                  </el-form-item>
-
-                  <el-form-item :label="productLabelObj.price" >
-                    <el-input   v-model='cfgForm.price'></el-input>
-                  </el-form-item>
-
-                  <el-form-item :label="productLabelObj.status" >
-                    <el-select v-model="cfgForm.status">
-                      <el-option :label='productLabelObj.txtDisable' :value='0' ></el-option> 
-                      <el-option :label='productLabelObj.txtEnable' :value='1' ></el-option>
-                    </el-select>
-                  </el-form-item>
-
-                  <div>
-                    <p>{{productLabelObj.userCfgInfo}}</p>
-                  </div>
+                  <el-row>
+                    <el-col :span="11" v-if="tableData2.length < 1">
+                      <el-form-item :label="productLabelObj.price" >
+                        <el-input   v-model='cfgForm.price'></el-input>
+                      </el-form-item>
+                      </el-col>
+                    <el-col :span="11">
+                      <el-form-item :label="productLabelObj.status" >
+                        <el-select v-model="cfgForm.status">
+                          <el-option :label='productLabelObj.txtDisable' :value='0' ></el-option> 
+                          <el-option :label='productLabelObj.txtEnable' :value='1' ></el-option>
+                        </el-select>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
                  
+                  <div>
+                    <el-table v-loading="isLoadingRule" :data="tableData2" 
+                      :default-sort = "{prop: 'pName', order: 'descending'}" style="width: 100%" max-height="500" border>
+                      <!-- 规格名称 -->
+                      <el-table-column sortable  prop="ruleName" :label="productLabelObj.ruleName" >
+                        <template slot-scope='scope'>
+                          <el-input type="text" v-model="scope.row.ruleName"></el-input>
+                        </template>
+                      </el-table-column>
+                      <!-- 价格 -->
+                      <el-table-column  prop="price" :label="productLabelObj.price" >
+                        <template slot-scope='scope'>
+                          <el-input type="text" v-model="scope.row.price"></el-input>
+                        </template>
+                      </el-table-column>
+                      <!-- 状态 -->
+                      <el-table-column  prop="status" :label="productLabelObj.status">
+                        <template slot-scope='scope'>
+                            <el-switch
+                              v-model='scope.row.status'
+                              :active-value='0'
+                              :inactive-value='1'
+                              :active-text="productLabelObj.activeOnText"
+                              :inactive-text="productLabelObj.unActiveText">
+                            </el-switch>
+                        </template>
+                      </el-table-column>
+                        <!-- 图片 -->
+                      <el-table-column  prop="img" :label="productLabelObj.upBtnTxt">
+                        <template slot-scope='scope'>
+                          <img/>
+                        </template>
+                      </el-table-column>
+                      <!-- 操作列 -->
+                      <el-table-column  :label="productLabelObj.operaTxt">
+                        <template slot-scope='scope'>
+                          <el-row class='operaCls' :gutter="20">
+                              <el-col :span='24'>
+                                <el-button type="text" @click="modifyUserFun(scope.row)">[{{productLabelObj.upBtnTxt}}]</el-button>
+                              </el-col>
+                            <!-- <el-col :span='8'>
+                                <el-button type="text">[禁用]</el-button>
+                              </el-col>
+                              <el-col :span='8'>
+                                <el-button type="text">[离职]</el-button>
+                              </el-col>-->
+                          </el-row>
+
+                        </template>
+                      </el-table-column>
+                  </el-table>
+                 </div>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                   <el-button type="danger" @click="submitUserForm('cfgForm')">{{productLabelObj.labelBtnOK}}</el-button>
@@ -148,6 +206,8 @@ export default {
       cfgRules: {
         userName: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       },
+      tableData2: [],
+      isLoadingRule: false,
       productLabelObj: {
         pName: '产品名称',
         pNumber: '产品编号',
@@ -164,7 +224,12 @@ export default {
         labelBtnOK: '确定',
         cfgTitle: '新增产品',
         addTitle: '新增产品',
-        editTitle: '修改产品'
+        editTitle: '修改产品',
+        ruleName: '规则名称',
+        ruleImg: '照片',
+        upBtnTxt: '上传',
+        unActiveText: '关',
+        activeOnText: '开'
       },
       isLoading: false,
       tableData: []
@@ -172,6 +237,8 @@ export default {
   },
   mounted() {
     this.getPagedData();
+    // 加载列表的数据
+    this.getProRule();
   },
   methods: {
     /* Begin: 分页必备 */
@@ -246,6 +313,30 @@ export default {
       }) */
     },
     /* END: 分页必备 */
+    /* 获取产品规则的信息*/
+    getProRule() {
+      this.tableData2 = [{
+        ruleName: 'mate系列',
+        price: '5899',
+        status: 0,
+        img: ''
+      }, {
+        ruleName: 'P系列',
+        price: '2999',
+        status: 1,
+        img: ''
+      }, {
+        ruleName: '平板系列',
+        price: '1999',
+        status: 0,
+        img: ''
+      }, {
+        ruleName: '畅享系列',
+        price: '999',
+        status: 1,
+        img: ''
+      }]
+    },
     addUsersFun() {
       this.productLabelObj.cfgTitle = this.productLabelObj.addTitle;
       this.dialogCfgForm = true;
@@ -254,6 +345,8 @@ export default {
       this.cfgForm = records;
       this.productLabelObj.cfgTitle = this.productLabelObj.editTitle;
       this.dialogCfgForm = true;
+      // 加载列表的数据
+      this.getProRule();
     },
     closeCfgWin() {
       this.cfgForm = {
@@ -294,28 +387,28 @@ export default {
         background:rgba(255,255,255,1);
         .tableCls{
           padding: 9px 26px 20px 26px;
+          .el-table th{
+            background-color: #f7f7f7;
+          }
+          .el-dialog__header{
+            background-color: #f7f7f7;
+          }
+          .operaCls{
+            text-align: center;
+          }
         }
         .toolbarCls{
           padding:15px 26px 5px 26px;
           text-align: left;
-        }
-        .toolbarCls .el-date-editor{
+          .el-date-editor{
           float: right;
-        }
-        .toolbarCls .el-input{
-          width: 210px;
-        }
-        .toolbarCls .newTbarCls{
-            margin-top: 15px;
-        }
-        .tableCls.el-table th{
-          background-color: #f7f7f7;
-        }
-        .tableCls .el-dialog__header{
-          background-color: #f7f7f7;
-        }
-        .tableCls .operaCls{
-          text-align: center;
+          }
+          .el-input{
+            width: 210px;
+          }
+          .newTbarCls{
+              margin-top: 15px;
+          }
         }
         .el-cm {
             width: 100%;
@@ -329,6 +422,10 @@ export default {
             text-align: center;
         }
       }
-    
+      .addWinCls{
+        .el-col{
+          margin-left: 26px;
+        }
+      }
   }
 </style>
