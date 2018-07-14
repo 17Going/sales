@@ -27,31 +27,31 @@
             
             <el-table v-loading="isLoading" :data="tableData" 
                 :default-sort = "{prop: 'pName', order: 'descending'}" style="width: 100%" max-height="500" border>
-
+              <!-- 产品名称 -->
               <el-table-column sortable  prop="pName" :label="productLabelObj.pName" >
                 <template slot-scope='scope'>
                   <el-button type="text" @click="modifyUserFun(scope.row)">{{scope.row.pName}}</el-button>
                 </template>
               </el-table-column>
-
+              <!-- 产品编号 -->
               <el-table-column  prop="pNumber" :label="productLabelObj.pNumber">
                 <template slot-scope='scope'>
                   <p>{{scope.row.pNumber}}</p>
                 </template>
               </el-table-column>
-
+              <!-- 价格 -->
               <el-table-column  prop="price" :label="productLabelObj.price" >
                 <template slot-scope='scope'>
                   <p>{{scope.row.price}}</p>
                 </template>
               </el-table-column>
-
+              <!-- 状态 -->
               <el-table-column  prop="status" :label="productLabelObj.status">
                 <template slot-scope='scope'>
                   <p>{{getStatus(scope.row.status)}}</p>
                 </template>
               </el-table-column>
-              
+              <!-- 操作 -->
               <el-table-column  :label="productLabelObj.operaTxt">
                 <template slot-scope='scope'>
                   <el-row class='operaCls' :gutter="20">
@@ -85,9 +85,9 @@
                 <span slot="title" class="el-dialog__title">{{productLabelObj.cfgTitle}}</span>
                 <el-form :model="cfgForm" :rules="cfgRules" ref="cfgForm" label-width="80px" label-position="left">
                 
-                  <el-row>
+                  <el-row :gutter="20">
                     <el-col :span="11">
-                      <el-form-item :label="productLabelObj.pName" >
+                      <el-form-item :label="productLabelObj.pName">
                         <el-input   v-model='cfgForm.pName'></el-input>
                       </el-form-item>
                     </el-col>
@@ -98,7 +98,7 @@
                     </el-col>
                   </el-row>
 
-                  <el-row>
+                  <el-row :gutter="20">
                     <el-col :span="11" v-if="tableData2.length < 1">
                       <el-form-item :label="productLabelObj.price" >
                         <el-input   v-model='cfgForm.price'></el-input>
@@ -142,7 +142,7 @@
                         </template>
                       </el-table-column>
                         <!-- 图片 -->
-                      <el-table-column  prop="img" :label="productLabelObj.upBtnTxt">
+                      <el-table-column  prop="img" :label="productLabelObj.ruleImg">
                         <template slot-scope='scope'>
                           <img/>
                         </template>
@@ -152,7 +152,7 @@
                         <template slot-scope='scope'>
                           <el-row class='operaCls' :gutter="20">
                               <el-col :span='24'>
-                                <el-button type="text" @click="modifyUserFun(scope.row)">[{{productLabelObj.upBtnTxt}}]</el-button>
+                                <el-button type="primary" size="mini" @click="modifyUserFun(scope.row)">[{{productLabelObj.upBtnTxt}}]<i class="el-icon-upload el-icon--right"></i></el-button>
                               </el-col>
                             <!-- <el-col :span='8'>
                                 <el-button type="text">[禁用]</el-button>
@@ -420,11 +420,6 @@ export default {
         }
         .el-pagination{
             text-align: center;
-        }
-      }
-      .addWinCls{
-        .el-col{
-          margin-left: 26px;
         }
       }
   }
