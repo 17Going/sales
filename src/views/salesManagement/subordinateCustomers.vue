@@ -1,6 +1,24 @@
 <template>
   <div class="app-container">
 
+    <!--查询按钮位置-->
+    <div class="filter-container">
+      <el-input @keyup.enter.native="handleFilter"
+                style="width: 200px;"
+                class="filter-item" placeholder="请输入客户名称">
+      </el-input>
+      <el-select v-model="value" class="filter-item" placeholder="请选择客户所属区域">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}
+      </el-button>
+    </div>
+
     <el-table :data="list" v-loading.body="listLoading"
               border fit highlight-current-row
               style="width: 100%"
@@ -104,8 +122,19 @@
 
       <el-table-column align="center" min-width="650px" label="操作">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.edit" type="success" @click="confirmEdit(scope.row)" size="small" icon="el-icon-circle-check-outline">Ok</el-button>
-          <el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">Edit</el-button>
+          <el-button @click="handleClick(scope.row)" type="danger" size="small">加入理单</el-button>
+          <el-button plain size="small" icon="el-icon-edit-outline">添加跟进人</el-button>
+          <el-button plain size="small" icon="el-icon-edit-outline">转交</el-button>
+          <el-button plain size="small" icon="el-icon-edit">调整保护期</el-button>
+          <el-button type="danger" size="small">标记为不准确</el-button>
+          <el-button plain size="small" icon="el-icon-view">关注</el-button>
+          <!--<el-button v-if="scope.row.edit" type="success" @click="confirmEdit(scope.row)" size="small" icon="el-icon-circle-check-outline">Ok</el-button>-->
+          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">加入理单</el-button>-->
+          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">添加跟进人</el-button>-->
+          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">转交</el-button>-->
+          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">调整保护期</el-button>-->
+          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">标记为不准确</el-button>-->
+          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">关注</el-button>-->
         </template>
       </el-table-column>
 
@@ -125,13 +154,30 @@
     name: 'inlineEditTable',
     data() {
       return {
+        options: [{
+          value: '北京',
+          label: '北京'
+        }, {
+          value: '安徽',
+          label: '安徽'
+        }, {
+          value: '上海',
+          label: '上海'
+        }, {
+          value: '河南',
+          label: '河南'
+        }, {
+          value: '四川',
+          label: '四川'
+        }],
+        value: '',
         tableKey: 0,
         list: null,
         total: null,
         listLoading: true,
         listQuery: {
           page: 1,
-          limit: 20,
+          limit: 10,
           importance: undefined
         },
         importanceOptions: [1, 2, 3]
@@ -165,6 +211,10 @@
           this.total = 100 // 先定死
           this.listLoading = false
         })
+      },
+      /* 查询方法 */
+      handleFilter() {
+
       },
       cancelEdit(row) {
         row.title = row.originalTitle

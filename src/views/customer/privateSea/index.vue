@@ -5,12 +5,12 @@
         </el-input>
         <el-button type="primary" icon="el-icon-search" class="filter-item">{{$t('table.search')}}</el-button>
       </div>
-      <el-table :data="tableData4" style="width: 100%;font-size:10px;" max-height="1000" :border="true">
+      <el-table :data="tableData4" style="width: 100%;font-size:10px;" max-height="1000" border>
         <el-table-column align="center" type="selection" width="55" label="全选">
 
         </el-table-column>
 
-        <el-table-column align="center" sortable fixed prop="cusname" label="客户名称" width="120"> 
+        <el-table-column align="center" sortable fixed prop="cusname" label="客户名称" width="120">
 
         </el-table-column>
 
@@ -24,7 +24,7 @@
         <el-table-column align="center" prop="cusFrom" label="客户来源" width="100"> </el-table-column>
         <el-table-column align="center" prop="location" label="所属区域" width="100"> </el-table-column>
         <!-- 电话跟进表 -->
-        <el-table-column align="center"  label="电话跟进" width="100"> 
+        <el-table-column align="center"  label="电话跟进" width="100">
           <template scope="scope">
             <div style="display:inline-flex">
               <div style="margin-right:10px;color:blue;font-size:15px;">
@@ -34,7 +34,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="seeIn" label="拜访跟进" width="100"> 
+        <el-table-column align="center" prop="seeIn" label="拜访跟进" width="100">
           <template scope="scope">
             <div style="display:inline-flex">
               <div style="margin-right:10px;color:blue;font-size:15px;">
@@ -113,7 +113,7 @@
                   <el-button @click="telephoneInVisable = false">取消</el-button>
               </el-form-item>
             </el-form>
-          </template>  
+          </template>
         <!-- <div slot="footer" class="dialog-footer">
           <el-button @click="telephoneInVisable = false">取 消</el-button>
           <el-button type="primary" @click="telephoneInVisable = false">确 定</el-button>
