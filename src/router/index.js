@@ -71,7 +71,6 @@ export const asyncRouterMap = [
         path: 'organizational', // 组织架构路由
         component: () => import('@/views/management/EOS'),
         name: 'organizational',
-<<<<<<< HEAD
         redirect: 'noredirect',
         children: [{
           path: 'enterpriseUser',
@@ -81,13 +80,11 @@ export const asyncRouterMap = [
             title: 'usetNnme',
             icon: 'user'
           }
-        }]
-=======
+        }],
         meta: {
           title: 'organizational',
           icon: 'peoples'
         }
->>>>>>> f36e6bdc952dd2bff5a1ed955d96f08570aa0fcf
       }, {
         path: 'permissionGroup', // 权限组路由
         component: () => import('@/views/management/permissionGroup'),
