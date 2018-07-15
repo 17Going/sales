@@ -5,8 +5,8 @@
         </el-input>
         <el-button type="primary" icon="el-icon-search" class="filter-item">{{$t('table.search')}}</el-button>
       </div>
-      <el-table :data="tableData4" style="width: 100%;font-size:10px;" max-height="1000" border="true">
-        <el-table-column align="center" type="selection"width="55" label="全选">
+      <el-table :data="tableData4" style="width: 100%;font-size:10px;" max-height="1000" :border="true">
+        <el-table-column align="center" type="selection" width="55" label="全选">
 
         </el-table-column>
 

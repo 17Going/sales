@@ -1,129 +1,134 @@
 <template>
-  <div class="app-container">
-
-    <el-table :data="list" v-loading.body="listLoading" border fit highlight-current-row style="width: 100%">
-
-      <el-table-column align="center" label="ID" width="80">
-        <template slot-scope="scope">
-          <span>{{scope.row.id}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="180px" align="center" label="Date">
-        <template slot-scope="scope">
-          <span>{{scope.row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}')}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="120px" align="center" label="Author">
-        <template slot-scope="scope">
-          <span>{{scope.row.author}}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" label="Importance">
-        <template slot-scope="scope">
-          <svg-icon v-for="n in +scope.row.importance" icon-class="star" class="meta-item__icon" :key="n"></svg-icon>
-        </template>
-      </el-table-column>
-
-      <el-table-column class-name="status-col" label="Status" width="110">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{scope.row.status}}</el-tag>
-        </template>
-      </el-table-column>
-
-      <el-table-column min-width="300px" label="Title">
-        <template slot-scope="scope">
-          <template v-if="scope.row.edit">
-            <el-input class="edit-input" size="small" v-model="scope.row.title"></el-input>
-            <el-button class='cancel-btn' size="small" icon="el-icon-refresh" type="warning" @click="cancelEdit(scope.row)">cancel</el-button>
-          </template>
-          <span v-else>{{ scope.row.title }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" label="Actions" width="120">
-        <template slot-scope="scope">
-          <el-button v-if="scope.row.edit" type="success" @click="confirmEdit(scope.row)" size="small" icon="el-icon-circle-check-outline">Ok</el-button>
-          <el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">Edit</el-button>
-        </template>
-      </el-table-column>
-
-    </el-table>
+  <div class="mainCls">
+     <div class="contentCls">
+        <el-tabs v-model="activeName" type="card" >
+            <el-tab-pane label="私海保护期" name="privateSeaTab">
+                <el-table v-loading="isLoading" :data="privateData" 
+                 style="width: 100%" max-height="500" border>
+                <!-- 保护期类型 -->
+                <el-table-column prop="protectType" :label="labelObj.protectType" >
+                    <template slot-scope='scope'>
+                    <p>{{scope.row.protectType}}</p>
+                    </template>
+                </el-table-column>
+                <!-- 使用部门 -->
+                <el-table-column  prop="useDept" :label="labelObj.useDept">
+                    <template slot-scope='scope'>
+                    <p>{{scope.row.useDept}}</p>
+                    </template>
+                </el-table-column>
+                <!-- 保护天数 -->
+                <el-table-column  prop="protectDays" :label="labelObj.protectDays" >
+                    <template slot-scope='scope'>
+                    <p>{{scope.row.protectDays}}</p>
+                    </template>
+                </el-table-column>
+                 <!-- 更新保护期 -->
+                <el-table-column  prop="continueUpdate" :label="labelObj.continueUpdate" >
+                    <template slot-scope='scope'>
+                    <span class="continueUpdate">{{scope.row.continueUpdate}}</span>
+                    </template>
+                </el-table-column>
+                 <!-- 操作 -->
+                <el-table-column  prop="price" :label="labelObj.btnOperaText" >
+                    <template slot-scope='scope'>
+                        <el-button type='text'><i class="el-icon-edit"></i>{{labelObj.btnEditText}}</el-button>
+                    </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="承担客户保护期" name="assumeTab">
+               <el-table v-loading="isLoading" :data="assumeData" 
+                 style="width: 100%" max-height="500" border>
+                <!-- 保护期类型 -->
+                <el-table-column prop="protectType" :label="labelObj.protectType" >
+                    <template slot-scope='scope'>
+                    <el-button type="text" @click="modifyUserFun(scope.row)">{{scope.row.protectType}}</el-button>
+                    </template>
+                </el-table-column>
+                <!-- 保护期开始计算日期 -->
+                <el-table-column  prop="protectStartTime" :label="labelObj.protectStartTime">
+                    <template slot-scope='scope'>
+                    <p>{{scope.row.protectStartTime}}</p>
+                    </template>
+                </el-table-column>
+                <!-- 保护天数 -->
+                <el-table-column  prop="protectDays" :label="labelObj.protectDays" >
+                    <template slot-scope='scope'>
+                    <p>{{scope.row.protectDays}}</p>
+                    </template>
+                </el-table-column>
+                 <!-- 启用状态 -->
+                <el-table-column  prop="enableStatus" :label="labelObj.enableStatus" >
+                    <template slot-scope='scope'>
+                    <p>{{scope.row.enableStatus}}</p>
+                    </template>
+                </el-table-column>
+                 <!-- 操作 -->
+                <el-table-column :label="labelObj.btnOperaText" >
+                    <template slot-scope='scope'>
+                        <el-button type='text'><i class="el-icon-edit"></i>{{labelObj.btnEditText}}</el-button>
+                    </template>
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+        </el-tabs>
+       
+      
+    </div>
   </div>
 </template>
 
 <script>
-import { fetchList } from '@/api/article'
 
 export default {
-  name: 'inlineEditTable',
   data() {
     return {
-      list: null,
-      listLoading: true,
-      listQuery: {
-        page: 1,
-        limit: 10
-      }
-    }
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
-  },
-  created() {
-    this.getList()
-  },
-  methods: {
-    getList() {
-      this.listLoading = true
-      fetchList(this.listQuery).then(response => {
-        const items = response.data.items
-        this.list = items.map(v => {
-          this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html
-
-          v.originalTitle = v.title //  will be used when user click the cancel botton
-
-          return v
-        })
-        this.listLoading = false
-      })
-    },
-    cancelEdit(row) {
-      row.title = row.originalTitle
-      row.edit = false
-      this.$message({
-        message: 'The title has been restored to the original value',
-        type: 'warning'
-      })
-    },
-    confirmEdit(row) {
-      row.edit = false
-      row.originalTitle = row.title
-      this.$message({
-        message: 'The title has been edited',
-        type: 'success'
-      })
+      activeName: 'privateSeaTab',
+      rules: {},
+      temp: {},
+      dataForm: {},
+      labelObj: {
+        protectType: '保护期类型',
+        useDept: '使用部门',
+        protectDays: '保护天数',
+        continueUpdate: '更新保护期',
+        protectStartTime: '保护期开始计算日期',
+        enableStatus: '启用状态',
+        btnOperaText: '操作',
+        btnEditText: '修改'
+      },
+      isLoading: false,
+      privateData: [{
+        protectType: '添加新客户',
+        useDept: '全公司',
+        protectDays: '15',
+        continueUpdate: '更新保护期'
+      }], // 私海保护列表数据
+      assumeData: [{
+        protectType: '添加新客户',
+        protectDays: '30',
+        protectStartTime: '合同签订日期',
+        enableStatus: '启用'
+      }] // 承担客户列表数据
     }
   }
 }
 </script>
-
-<style scoped>
-.edit-input {
-  padding-right: 100px;
-}
-.cancel-btn {
-  position: absolute;
-  right: 15px;
-  top: 10px;
-}
+<style rel="stylesheet/scss" lang="scss" scoped>
+  .mainCls{
+    .contentCls{
+      margin: 20px;
+      .dialog-footer{
+        align: center;
+        text-align: center;
+      }
+      .continueUpdate{
+        background-color: #00da7b;
+        color: #fff;
+        border: 1px solid #00da7b;
+        border-radius: 3px;
+      }
+    }
+  }
 </style>

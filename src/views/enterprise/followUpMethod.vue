@@ -3,51 +3,52 @@
      <div class="contentCls">
         <el-tabs v-model="activeName" type="card" >
             <el-tab-pane label="电话跟进" name="phoneTab">
-                <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="138px" style='width: 400px; margin-left:50px;'>
+                <div>
+                    <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="138px" style='width: 400px; margin-left:50px;'>
+                        <el-form-item :label="labelObj.followName" prop="followName">
+                            <el-input v-model="temp.followName" disabled></el-input>
+                        </el-form-item>
+                        
+                        <el-form-item :label="labelObj.contactName" prop="contactName">
+                            <el-input v-model="temp.contactName" disabled></el-input>
+                        </el-form-item>
 
-                <el-form-item :label="labelObj.followName" prop="followName">
-                <el-input v-model="temp.followName" disabled></el-input>
-                </el-form-item>
-                
-                <el-form-item :label="labelObj.contactName" prop="contactName">
-                <el-input v-model="temp.contactName" disabled></el-input>
-                </el-form-item>
+                        <el-form-item :label="labelObj.contactPhone" prop="contactPhone">
+                            <el-input v-model="temp.contactPhone" disabled></el-input>
+                        </el-form-item>
 
-                <el-form-item :label="labelObj.contactPhone" prop="contactPhone">
-                <el-input v-model="temp.contactPhone" disabled></el-input>
-                </el-form-item>
+                        <el-form-item :label="labelObj.callTime" prop="callTime">
+                            <el-input v-model="temp.callTime" disabled></el-input>
+                        </el-form-item>
 
-                <el-form-item :label="labelObj.callTime" prop="callTime">
-                <el-input v-model="temp.callTime" disabled></el-input>
-                </el-form-item>
+                        <el-form-item :label="labelObj.callLength" prop="callLength">
+                            <el-input v-model="temp.callLength" disabled></el-input>
+                        </el-form-item>
 
-                <el-form-item :label="labelObj.callLength" prop="callLength">
-                <el-input v-model="temp.callLength" disabled></el-input>
-                </el-form-item>
+                        <el-form-item :label="labelObj.contactCase">
+                        <el-select class="filter-item" v-model="temp.contactCase" placeholder="联系情况" disabled>
+                            <el-option v-for="item in []" :key="item" :label="item" :value="item">
+                            </el-option>
+                        </el-select>
+                        </el-form-item>
 
-                <el-form-item :label="labelObj.contactCase">
-                <el-select class="filter-item" v-model="temp.contactCase" placeholder="联系情况" disabled>
-                    <el-option v-for="item in []" :key="item" :label="item" :value="item">
-                    </el-option>
-                </el-select>
-                </el-form-item>
+                        <el-form-item :label="labelObj.phoneRecord">
+                            <el-input v-model="temp.phoneRecord" disabled></el-input>
+                        </el-form-item>
 
-                <el-form-item :label="labelObj.phoneRecord">
-                    <el-input v-model="temp.phoneRecord" disabled></el-input>
-                </el-form-item>
+                        <el-form-item :label="labelObj.contactTime">
+                            <el-input v-model="temp.contactTime" disabled></el-input>
+                        </el-form-item>
+                    </el-form>
 
-                <el-form-item :label="labelObj.contactTime">
-                    <el-input v-model="temp.contactTime" disabled></el-input>
-                </el-form-item>
-            </el-form>
-
-            <div slot="footer" class="dialog-footer">
-                <el-button  type="danger" >{{labelObj.btnSaveText}}</el-button>
-                <el-button  type="danger" >{{labelObj.btnCancelText}}</el-button>
-            </div>
-
+                    <div slot="footer" class="dialog-footer">
+                        <el-button  type="danger" >{{labelObj.btnSaveText}}</el-button>
+                        <el-button  type="danger" >{{labelObj.btnCancelText}}</el-button>
+                    </div>
+                </div>
             </el-tab-pane>
             <el-tab-pane label="拜访跟进" name="visitTab">
+                <div>
                  <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="138px" style='width: 400px; margin-left:50px;'>
                     <!-- 跟进方式名称 -->
                     <el-form-item :label="labelObj.followName" prop="followName">
@@ -102,7 +103,7 @@
                     <el-button  type="danger" >{{labelObj.btnSaveText}}</el-button>
                     <el-button  type="danger" >{{labelObj.btnCancelText}}</el-button>
                 </div>
-
+             </div>
             </el-tab-pane>
         </el-tabs>
        

@@ -314,7 +314,7 @@ export const asyncRouterMap = [
       },
       {
         path: 'contractSetting',
-        component: () => import('@/views/enterprise/contractSetting/contract'),
+        component: () => import('@/views/enterprise/contractSet.vue'),
         name: 'contractSetting',
         meta: {
           title: 'contractSetting'
@@ -322,7 +322,7 @@ export const asyncRouterMap = [
       },
       {
         path: 'productSetting',
-        component: () => import('@/views/enterprise/contractSetting/productSetting'),
+        component: () => import('@/views/enterprise/productSet.vue'),
         name: 'productSetting',
         meta: {
           title: 'productSetting'
