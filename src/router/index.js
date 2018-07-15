@@ -72,7 +72,6 @@ export const asyncRouterMap = [
         component: () => import('@/views/management/EOS'),
         name: 'organizational',
         redirect: 'noredirect',
-        name: 'people',
         children: [{
           path: 'enterpriseUser',
           component: () => import('@/views/management/enterpriseUser'),
@@ -124,13 +123,13 @@ export const asyncRouterMap = [
       icon: 'people'
     },
     children: [{ // 私海
-      path: 'privateSea', component: () => import('@/views/customer/privateSea'),
+      path: 'privateSea', component: () => import('@/views/customer/privateSea/index'),
       name: 'privateSea',
       meta: {
         title: 'privateSea'
       }
     }, { // 我的成单客户
-      path: 'MySingleCustomer',
+      path: 'privateSea1',
       component: () => import('@/views/customer/MySingleCustomer'),
       name: 'MySingleCustomer',
       meta: {
