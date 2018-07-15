@@ -37,17 +37,20 @@
         </el-table-column>
         <el-table-column label="读写" min-width="20%">
           <template slot-scope="scope">
-            <el-radio v-model="scope.row.write" @change="radioClick('write', scope.$index, scope.row)"></el-radio>
+            <el-radio v-model="scope.row.limits" label="2"
+                      @change="radioClick('write', scope.$index, scope.row)">&nbsp;</el-radio>
           </template>
         </el-table-column>
         <el-table-column label="只读" min-width="20%">
           <template slot-scope="scope">
-            <el-radio v-model="scope.row.read" @change="radioClick('read', scope.$index, scope.row)"></el-radio>
+            <el-radio v-model="scope.row.limits" label="1"
+                      @change="radioClick('read', scope.$index, scope.row)">&nbsp;</el-radio>
           </template>
         </el-table-column>
         <el-table-column label="无" min-width="20%">
           <template slot-scope="scope">
-            <el-radio v-model="scope.row.nothing" @change="radioClick('nothing', scope.$index, scope.row)"></el-radio>
+            <el-radio v-model="scope.row.limits" label="0"
+                      @change="radioClick('nothing', scope.$index, scope.row)">&nbsp;</el-radio>
           </template>
         </el-table-column>
       </tree-table>
@@ -89,61 +92,46 @@
               id: 2,
               event: '驾驶舱',
               timeLine: 10,
-              write: true,
-              read: false,
-              nothing: false,
+              limits: '0',
               comment: '无'
             },
             {
               id: 2,
               event: '企业管理',
               timeLine: 10,
-              write: true,
-              read: false,
-              nothing: false,
-              comment: '无',
+              limits: '2',
               children: [
                 {
                   id: 4,
                   event: '组织架构',
                   timeLine: 5,
-                  write: true,
-                  read: false,
-                  nothing: false,
+                  limits: 0,
                   comment: '无'
                 },
                 {
                   id: 5,
                   event: '权限组',
                   timeLine: 10,
-                  write: true,
-                  read: false,
-                  nothing: false,
+                  limits: 0,
                   comment: '无'
                 },
                 {
                   id: 6,
                   event: '用户',
                   timeLine: 75,
-                  write: true,
-                  read: false,
-                  nothing: false,
+                  limits: 0,
                   comment: '无'
                 }, {
                   id: 7,
                   event: '职位',
                   timeLine: 50,
-                  write: true,
-                  read: false,
-                  nothing: false,
+                  limits: 0,
                   comment: '无'
                 },
                 {
                   id: 8,
                   event: '客户维护',
-                  write: true,
-                  read: false,
-                  nothing: false,
+                  limits: 0,
                   timeLine: 25,
                   comment: '无'
                 }
@@ -152,9 +140,7 @@
             {
               id: 3,
               event: '客户',
-              write: true,
-              read: false,
-              nothing: false,
+              limits: 0,
               timeLine: 90,
               comment: '无',
               children: []
@@ -191,10 +177,10 @@
         return row.address
       },
       handleEdit(index, row) {
-        console.log(index, row)
+        console.log(index, row);
       },
       handleDelete(index, row) {
-        console.log(index, row)
+        console.log(index, row);
       },
       getList() {
 
@@ -217,18 +203,13 @@
       updateData() {
 
       },
-      radioClick(type, a, b) {
-        const typeArr = ['write', 'read', 'nothing']
-        const len = typeArr.length
-        console.log(type)
-        for (let i = 0; i < len; i++) {
-          const singleType = typeArr[i]
-          if (type !== singleType) {
-            b[singleType] = ''
-          }
-        }
-        b[type] = undefined
-        console.log(b[type])
+      /**
+       *
+       * @param type 点击事件类型
+       * @param a
+       * @param b
+       */
+      radioClick(type, index, rows) {
       }
     }
   }

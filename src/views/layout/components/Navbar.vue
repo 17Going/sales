@@ -20,8 +20,8 @@
 
         <el-dropdown class="avatar-container right-menu-item" trigger="click">
           <div class="avatar-wrapper" >
-            <svg-icon class="user-avatar" style="width: 40px;height: 40px;" icon-class="people"/>
-            <span style="font-size: 32px;line-height: 40px;">admin</span>
+            <svg-icon class="user-avatar" icon-class="people"/>
+            <span class="user-avatar-text">admin</span>
             <!--<img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">-->
             <i class="el-icon-caret-bottom"></i>
           </div>
@@ -218,8 +218,9 @@ export default {
         margin-top: 5px;
         position: relative;
         .user-avatar {
-          width: 40px;
-          height: 40px;
+          width: 36px;
+          height: 36px;
+          padding-bottom: 6px;
           border-radius: 10px;
         }
         .el-icon-caret-bottom {
@@ -229,6 +230,13 @@ export default {
           font-size: 12px;
         }
       }
+    }
+    .user-avatar-text {
+      font-size: 24px;
+      line-height: 40px;
+      display: inline-block;
+      vertical-align: middle;
+      margin-bottom: 29px;
     }
   }
 }

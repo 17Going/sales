@@ -26,4 +26,6 @@ Mock.mock(/\/search\/user/, 'get', remoteSearchAPI.searchUser)
 // 账单相关
 Mock.mock(/\/transaction\/list/, 'get', transactionAPI.getList)
 
+// 假数据模拟 /salesManagement/list
+Mock.mock(/\/salesManagement\/list/, 'get', articleAPI.getSalesManagement)
 export default Mock

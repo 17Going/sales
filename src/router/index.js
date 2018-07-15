@@ -68,9 +68,10 @@ export const asyncRouterMap = [
       }
     }, */
       {
-        path: '/organizational', // 组织架构路由
+        path: 'organizational', // 组织架构路由
         component: () => import('@/views/management/EOS'),
         name: 'organizational',
+<<<<<<< HEAD
         redirect: 'noredirect',
         children: [{
           path: 'enterpriseUser',
@@ -81,12 +82,18 @@ export const asyncRouterMap = [
             icon: 'user'
           }
         }]
+=======
+        meta: {
+          title: 'organizational',
+          icon: 'peoples'
+        }
+>>>>>>> f36e6bdc952dd2bff5a1ed955d96f08570aa0fcf
       }, {
         path: 'permissionGroup', // 权限组路由
         component: () => import('@/views/management/permissionGroup'),
         name: 'permissionGroup',
         meta: { title: 'permissionGroup', icon: 'guide', noCache: true }
-      }, {
+      }, /* {
         path: 'user',
         component: () => import('@/views/management/user'),
         name: 'usetNnme',
@@ -94,9 +101,9 @@ export const asyncRouterMap = [
           title: 'usetNnme',
           icon: 'user'
         }
-      }, {
+      }, */ {
         path: 'position',
-        component: () => import('@/views/management/position'),
+        component: () => import('@/views/management/corporatePosts'),
         name: 'position',
         meta: {
           title: 'position',
@@ -265,7 +272,7 @@ export const asyncRouterMap = [
     component: Layout,
     children: [{
       path: '',
-      component: () => import('@/views/productList/index'),
+      component: () => import('@/views/productList/enterpriseProduct'),
       name: 'productList',
       meta: {
         title: 'productList',
@@ -286,7 +293,7 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'customer',
-        component: () => import('@/views/enterprise/customer/index'),
+        component: () => import('@/views/enterprise/customer/setIndex'),
         name: 'customer',
         meta: {
           title: 'enterprise_customer'

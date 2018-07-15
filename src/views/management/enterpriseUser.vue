@@ -2,7 +2,7 @@
   <div class="usersCls">
       <div class="contentCls">
         <div class="mainTopCls">
-          {{userCompany}}在职人员{{totalCount}}人,其中<el-button type="text">未分配部门人员{{noDeUser}}人</el-button>
+          {{depName}}在职人员{{postsCount}}人,其中<el-button type="text">未分配部门人员{{undistributedCount}}人</el-button>
         </div>
         <div class="toolbarCls">
           <div class="demo-input-suffix">
@@ -13,8 +13,9 @@
                 <el-col :xs="8" :md="11" :lg="8" :xl="6">
                     {{usersLabelObj.labelStateTxt}}&nbsp;&nbsp;&nbsp;&nbsp; <el-select v-model="userState" placeholder="请选择">
                       <el-option :label='usersLabelObj.txtAll' value='' checked></el-option>
-                      <el-option :label='usersLabelObj.txtNormal' value='normal'></el-option>
-                      <el-option :label='usersLabelObj.txtDisable' value='disable'></el-option>
+                      <el-option :label='usersLabelObj.txtNormal' value='0'></el-option>
+                      <el-option :label='usersLabelObj.txtDisable' value='2'></el-option>
+                      <el-option :label='usersLabelObj.txtDeleted' value='1'></el-option>
                     </el-select>
                 </el-col>
                 <el-col :xs="8" :md="2" :lg="7" :xl="8">
@@ -28,48 +29,48 @@
         </div>
         <div class="tableCls">
             
-            <el-table v-loading="isLoading" :data="fmData" 
-                :default-sort = "{prop: 'userPhone', order: 'descending'}" style="width: 100%" max-height="500" border>
+            <el-table v-loading="isLoading" :data="userData" 
+                :default-sort = "{prop: 'phone', order: 'descending'}" style="width: 100%" max-height="500" border>
 
-              <el-table-column sortable  prop="userPhone" :label="usersLabelObj.userPhone">
+              <el-table-column sortable  prop="phone" :label="usersLabelObj.userPhone">
                 <template slot-scope='scope'>
-                  <p>{{scope.row.userPhone}}</p>
+                  <p>{{(scope.row.phone || "")}}</p>
                 </template>
               </el-table-column>
 
               <el-table-column sortable  prop="userName" :label="usersLabelObj.userName" >
                 <template slot-scope='scope'>
-                  <el-button type="text">{{scope.row.userName}}</el-button>
+                  <el-button type="text">{{(scope.row.userName || "")}}</el-button>
                 </template>
               </el-table-column>
 
-              <el-table-column  prop="userDpm" :label="usersLabelObj.userDpm" >
+              <el-table-column  prop="depName" :label="usersLabelObj.userDpm" >
                 <template slot-scope='scope'>
-                  <p>{{scope.row.userDpm}}</p>
+                  <p>{{scope.row.depName + (scope.row.jobName ? "[" + scope.row.jobName + "]" : "")}}</p>
                 </template>
               </el-table-column>
 
-              <el-table-column  prop="userPartTimeDpm" :label="usersLabelObj.userPartTimeDpm" >
+              <!-- <el-table-column  prop="userPartTimeDpm" :label="usersLabelObj.userPartTimeDpm" >
                 <template slot-scope='scope'>
                   <p>{{scope.row.userPartTimeDpm}}</p>
                 </template>
-              </el-table-column>
+              </el-table-column> -->
 
-              <el-table-column  prop="userEmail" :label="usersLabelObj.userEmail">
+              <el-table-column  prop="email" :label="usersLabelObj.userEmail">
                 <template slot-scope='scope'>
-                  <p>{{scope.row.userEmail}}</p>
+                  <p>{{scope.row.email || ""}}</p>
                 </template>
               </el-table-column>
 
-              <el-table-column sortable prop="userCapacity" :label="usersLabelObj.userCapacity" >
+              <el-table-column sortable prop="cap" :label="usersLabelObj.userCapacity" >
                 <template slot-scope='scope'>
-                  <p>{{scope.row.userCapacity}}</p>
+                  <p>{{scope.row.cap || 0}}</p>
                 </template>
               </el-table-column>
 
-              <el-table-column  prop="userStatus" :label="usersLabelObj.userStatus">
+              <el-table-column  prop="status" :label="usersLabelObj.userStatus">
                 <template slot-scope='scope'>
-                  <p><el-tag :type="getCSSStatus(scope.row.userStatus)">{{getStatus(scope.row.userStatus)}}</el-tag></p>
+                  <p><el-tag :type="getCSSStatus(scope.row.status)">{{getStatus(scope.row.status)}}</el-tag></p>
                 </template>
               </el-table-column>
               
@@ -77,13 +78,13 @@
                 <template slot-scope='scope'>
                   <el-row class='operaCls' :gutter="20">
                       <el-col :span='8'>
-                        <el-button type="text" @click="modifyUserFun(scope.row)">[修改]</el-button>
+                        <el-button type="text" @click="modifyUserFun(scope.row)">{{usersLabelObj.labelBtnEdit}}</el-button>
                       </el-col>
                       <el-col :span='8'>
-                        <el-button type="text">[禁用]</el-button>
+                        <el-button type="text">{{usersLabelObj.labelBtnDis}}</el-button>
                       </el-col>
                       <el-col :span='8'>
-                        <el-button type="text">[离职]</el-button>
+                        <el-button type="text">{{usersLabelObj.labelBtnDel}}</el-button>
                       </el-col>
                   </el-row>
 
@@ -104,22 +105,33 @@
         <div class="addWinCls">
             <el-dialog :visible.sync="dialogUserCfgForm" @open='openUserCfgWin' @close="closeUserCfgWin">
                 <span slot="title" class="el-dialog__title">{{usersLabelObj.userCfgTitle}}</span>
-                <el-form :model="userCfgForm" :rules="userCfgRules" ref="userCfgForm" label-width="200px" label-position="top">
+                <el-form :model="userCfgForm" :rules="userCfgRules" ref="userCfgForm" label-width="138px" label-position="left">
                 
                   <el-form-item :label="usersLabelObj.labelName" >
-                    <el-input   v-model='userCfgForm.userName'></el-input>
+                    <el-input v-model='userCfgForm.userName'></el-input>
+                  </el-form-item>
+
+                   <el-form-item :label="usersLabelObj.labelJob">
+                     <el-select class="filter-item" v-model="userCfgForm.jobName" placeholder="Please select" @focus='getJobFun' @change='newJobFun'>
+                      <el-option v-for="item in jobData" :key="item.id" :label="item.jobName" :value="item">
+                      </el-option>
+                    </el-select>
+                  </el-form-item>
+
+                  <el-form-item label="" v-if="isShowJob">
+                    <el-input v-model='userCfgForm.jobNewName'></el-input>
                   </el-form-item>
 
                   <el-form-item :label="usersLabelObj.labelPhone" >
-                    <el-input   v-model='userCfgForm.userPhone'></el-input>
+                    <el-input   v-model='userCfgForm.phone'></el-input>
                   </el-form-item>
 
                   <el-form-item :label="usersLabelObj.labelEmail" >
-                    <el-input   v-model='userCfgForm.userEmail'></el-input>
+                    <el-input   v-model='userCfgForm.email'></el-input>
                   </el-form-item>
 
                   <el-form-item :label="usersLabelObj.labelCapacity" >
-                    <el-input  v-model='userCfgForm.userCapacity'></el-input>
+                    <el-input  v-model='userCfgForm.cap'></el-input>
                   </el-form-item>
 
                   <div>
@@ -129,6 +141,7 @@
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                   <el-button type="danger" @click="submitUserForm('userCfgForm')">{{usersLabelObj.labelBtnOK}}</el-button>
+                  <el-button type="danger" @click="submitUserForm('userCfgForm')">{{usersLabelObj.labelBtnOK}}</el-button>
                 </div>
               </el-dialog>
         </div>
@@ -136,311 +149,286 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
-
+import { userGetList } from '@/api/management'
 export default {
   name: 'table',
+  props: ['depId', 'depName'],
   data() {
     return {
-      userCompany: '华为公司',
-      noDeUser: 0,/*不在部门中的员工人数*/
-      searchPhoneORname: '',/*根据姓名或电话查询*/
-      userState: '',/*根据状态查询*/
+      undistributedCount: 0, /* 不在部门中的员工人数*/
+      postsCount: 0, /* 在职人数统计*/
+      searchPhoneORname: '', /* 根据姓名或电话查询*/
+      userState: '', /* 根据状态查询*/
       ccsStateVal: '',
       currentPage: 1,
       pagesize: 10,
       totalCount: 1,
-      timeVal: [new Date(),new Date()],/*默认当天时间*/
-      //配置窗口的属性值
-      dialogUserCfgForm: false,/*控制窗口显示/隐藏 */
+      timeVal: [new Date(), new Date()], /* 默认当天时间*/
+      // 配置窗口的属性值
+      // 获取所有的职位
+      jobData: [],
+      isShowJob: false, // 控制配置职位的显示隐藏
+      dialogUserCfgForm: false, /* 控制窗口显示/隐藏 */
       userCfgForm: {
-         userName: '',
-         userPhone: '',
-         userEmail: '',
-         userCapacity: ''
+        userName: '',
+        phone: '',
+        email: '',
+        cap: '',
+        jobNewName: '',
+        jobName: ''
       },
       userCfgRules: {
-        userName: [{required: true, message: '请输入名称', trigger: 'blur'}]
+        userName: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       },
       usersLabelObj: {
-          userPhone: '电话',
-          userName: '姓名',
-          userDpm: '部门[职位]',
-          userPartTimeDpm: '兼职部门[职位]',
-          userEmail: '邮箱',
-          userCapacity: '客户池容量',
-          userStatus: '使用状态',
-          userOpera: '操作',
-          labelSearchTxt: '电话/姓名',
-          labelStateTxt: '状态',
-          txtAll: '全部',
-          txtNormal: '正常',
-          txtDisable: '禁用',
-          labelBtnOK: '确定',
-          userCfgTitle: '新增用户',
-          userAddTitle: '新增用户',
-          userEditTitle: '修改用户',
-          labelName: '姓名',
-          labelPhone: '手机号码',
-          labelEmail: '邮箱',
-          labelCapacity: '客户池容量',
-          userCfgInfo: '注：试用企业最多可添加10个用户，客户池容量最高30，开通正式版可享受更多权益。'
+        userPhone: '电话',
+        userName: '姓名',
+        userDpm: '部门[职位]',
+        // userPartTimeDpm: '兼职部门[职位]',
+        userEmail: '邮箱',
+        userCapacity: '客户池容量',
+        userStatus: '使用状态',
+        userOpera: '操作',
+        labelSearchTxt: '电话/姓名',
+        labelStateTxt: '状态',
+        txtAll: '全部',
+        txtNormal: '正常',
+        txtDeleted: '已离职',
+        txtDisable: '禁用',
+        labelBtnOK: '确定',
+        labelBtnEdit: '[修改]',
+        labelBtnDis: '[禁用]',
+        labelBtnDel: '[离职]',
+        userCfgTitle: '新增用户',
+        userAddTitle: '新增用户',
+        userEditTitle: '修改用户',
+        labelName: '姓名',
+        labelJob: '职位',
+        labelPhone: '手机号码',
+        labelEmail: '邮箱',
+        labelCapacity: '客户池容量',
+        userCfgInfo: '注：试用企业最多可添加10个用户，客户池容量最高30，开通正式版可享受更多权益。'
       },
-      isLoading: true,
-      fmData: [],
-      /*扩展代码*/
-      pickerOptions2: {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          }]
-        }
+      isLoading: false,
+      userData: []
     }
   },
-  mounted(){
-     this.getPagedData();
+  mounted() {
+    // 扩展代码
+    // this.getPagedData();
   },
   methods: {
-    /*Begin: 分页必备 */
-    /*分页触发*/
-    handleSizeChange(val){
+    /* Begin: 分页必备 */
+    /* 分页触发*/
+    handleSizeChange(val) {
       this.pagesize = val;
       this.getPagedData();
     },
-    handleCurrentChange(val){
+    handleCurrentChange(val) {
       this.currentPage = val;
       this.getPagedData();
     },
-    /*获取列表数据，代表查询*/
-    getPagedData(){
-        let _this =  this;
-        var params = {
-            page: _this.currentPage,
-            pageSize: _this.pagesize,
-            startDate:  _this.getSTime(_this.timeVal[0]),
-            endDate: _this.getSTime(_this.timeVal[1])
+    // 获取所有的查询参数，如果有新加的，只需手动添加1个查询属性即可
+    getQueryParams() {
+      // 定义查询对象，对象有值时对其赋值
+      const query = {
+        'depId': '',
+        'userName': '',
+        'phone': '',
+        'status': ''
+      }
+      // 循环获取值不为空的查询参数
+      for (const queryKey in query) {
+        if (this[queryKey]) {
+          query[queryKey] = this[queryKey];
+        } else {
+          delete query[queryKey];
         }
-        _this.isLoading = true;
-        var response = {
-            code: 0,
-            data: {}
-        }
-       response.data.data = {
-            activeStaffCount:0,//在职人数
-            undistributedCount:0,//未分配人数
-            totalPageNum: 1,// 一共有几页
-            totalCount: 5,// 共有多少条记录
-            list: [
-              {
-                userPhone: '13681764137',// 用户手机号码
-                userName: '杨向阳1', // 用户名称
-                userDpm: '技术部[项目经理]', // 用户部门[职称]
-                userPartTimeDpm: '运营部[业务员]',// 兼职部门[职称]
-                userEmail: 'yxy@qq.com',// 用户邮箱
-                userCapacity: '10',// 客户池容量
-                userStatus: 'normal' // 使用状态：normal(正常) disabled(禁用)
-              }, {
-                userPhone: '13781764137',
-                userName: '杨向阳2',
-                userDpm: '技术部[项目经理]',
-                userPartTimeDpm: '运营部[业务员]',
-                userEmail: 'yxy@qq.com',
-                userCapacity: '101',
-                userStatus: 'disabled'
-              }, {
-                userPhone: '13881764137',
-                userName: '杨向阳3',
-                userDpm: '技术部[项目经理]',
-                userPartTimeDpm: '运营部[业务员]',
-                userEmail: 'yxy@qq.com',
-                userCapacity: '102',
-                userStatus: 'disabled'
-              }, {
-                userPhone: '13581764137',
-                userName: '杨向阳4',
-                userDpm: '技术部[项目经理]',
-                userPartTimeDpm: '运营部[业务员]',
-                userEmail: 'yxy@qq.com',
-                userCapacity: '103',
-                userStatus: 'normal'
-              }, {
-                userPhone: '13581764137',
-                userName: '杨向阳5',
-                userDpm: '技术部[项目经理]',
-                userPartTimeDpm: '运营部[业务员]',
-                userEmail: 'yxy@qq.com',
-                userCapacity: '105',
-                userStatus: 'normal'
-              }
-            
-            ]
-          }
-        _this.fmData = response.data.data.list;
-        _this.totalCount = parseInt(response.data.data.totalCount);
+      }
+      return query;
+    },
+    /* 获取列表数据，代表查询*/
+    getPagedData() {
+      const _this = this;
+      var params = {
+        pageIndex: _this.currentPage,
+        pageSize: _this.pagesize
+      }
+      const queryObj = _this.getQueryParams();
+      if (JSON.stringify(queryObj) !== '{}') {
+        params.query = JSON.stringify(queryObj);
+        console.log(typeof params.query);
+      }
+      _this.isLoading = true;
+      userGetList(params).then(response => {
         _this.isLoading = false;
-        return;
-        axios.get( '/finance/pay/page-list', {params})
-            .then(function (response) {
-            _this.isLoading = false;
-            if (response.data.code === 0) {
-                _this.fmData = response.data.data.list;
-                _this.totalCount = parseInt(response.data.data.count);
-            } else {
-                _this.fmData = [];
-                _this.totalCount = 1;
-                _this.$message.error(response.data.msg)
-            }
-            })
-            .catch(function (response) {
-            _this.isLoading = false;
-            })
+        if (response.data.code === '0') {
+          _this.userData = response.data.data.list;
+          _this.totalCount = response.data.data.totalCount;
+          _this.undistributedCount = response.data.data.undistributedCount;
+          _this.postsCount = _this.totalCount - _this.undistributedCount;
+        } else {
+          _this.userData = [];
+          _this.totalCount = 0;
+          _this.undistributedCount = 0;
+          _this.postsCount = 0;
+          _this.$message.error('error');
+          // 扩展使用
+        }
+      })
     },
-    /*END: 分页必备 */
-    addUsersFun(){
-        this.usersLabelObj.userCfgTitle = this.usersLabelObj.userAddTitle;
-        this.dialogUserCfgForm = true;
+    /* END: 分页必备 */
+    // 获取所有职位的取数方法
+    getJobFun() {
+      // 等待取数归位
+      if (this.isFrist) {
+        this.jobData = [{
+          id: 1,
+          jobName: '董事长'
+        }, {
+          id: 2,
+          jobName: 'CTO'
+        }, {
+          id: 3,
+          jobName: 'CEO'
+        }, {
+          id: 4,
+          jobName: '部门经理'
+        }, {
+          id: 5,
+          jobName: '组长'
+        }];
+        this.jobData.unshift({
+          id: '-1',
+          jobName: '-- 新建职位 --'
+        });
+        this.jobData.unshift({
+          id: '',
+          jobName: '-- NONE --'
+        });
+        this.isFrist = false;
+      }
     },
-    modifyUserFun(records){
+    // 新建职位接口
+    newJobFun(item) {
+      const val = item.id;
+      if (val === '') {
+        this.isShowJob = false;
+      } else {
+        this.isShowJob = true;
+        if (val === '-1') {
+          this.userCfgForm.jobName = '-- 新建职位 --';
+          this.userCfgForm.jobNewName = '';
+        } else {
+          this.userCfgForm.jobName = item.jobName;
+          this.userCfgForm.jobNewName = item.jobName;
+        }
+      }
+    },
+    addUsersFun() {
+      this.usersLabelObj.userCfgTitle = this.usersLabelObj.userAddTitle;
+      this.dialogUserCfgForm = true;
+      this.isFrist = true;
+    },
+    modifyUserFun(records) {
       this.userCfgForm = records;
       this.usersLabelObj.userCfgTitle = this.usersLabelObj.userEditTitle;
       this.dialogUserCfgForm = true;
+      this.isFrist = true;
     },
-    closeUserCfgWin(){
+    closeUserCfgWin() {
       this.userCfgForm = {
-         userName: '',
-         userPhone: '',
-         userEmail: '',
-         userCapacity: ''
+        userName: '',
+        phone: '',
+        email: '',
+        cap: '',
+        jobNewName: '',
+        jobName: ''
       }
+      this.jobData = [];
       this.$refs['userCfgForm'].resetFields();
       this.getPagedData();
     },
-    openUserCfgWin(){
-      console.log('我是最先触发的吧');
+    openUserCfgWin() {
+      // 扩展内容
     },
-    submitUserForm(){
+    submitUserForm() {
       this.dialogUserCfgForm = false;
     },
-    /*转换状态 0-充值中 1-已到账 2-充值失败*/
-    getStatus(state){
-      let objState = {
-        'normal':  this.usersLabelObj.txtNormal,
-        'disabled': this.usersLabelObj.txtDisable,
-        'cssnormal': 'success',
-        'cssdisabled': 'danger'
+    /* 转换状态 0-正常 1-删除 2-禁用*/
+    getStatus(state) {
+      const objState = {
+        0: this.usersLabelObj.txtNormal,
+        1: this.usersLabelObj.txtDeleted,
+        2: this.usersLabelObj.txtDisable
       }
       // this.ccsStateVal = objState['css'+state];
-      return objState[state]; 
+      return objState[state];
     },
-    getCSSStatus(state){
-       let objCSSState = {
-        'normal':  'success',
-        'disabled': 'danger'
+    getCSSStatus(state) {
+      const objCSSState = {
+        0: 'success',
+        1: 'info',
+        2: 'danger'
       }
-      return objCSSState[state]; 
+      return objCSSState[state];
     },
-    /*转换时间格式*/
-    getSTime (sTime) {
-      var myDate = new Date(sTime)
-      var month = myDate.getMonth() + 1;
-      var day = myDate.getDate();
-      var date = myDate.getFullYear() + "-" + (month > 9 ? month : '0'+month) + "-" + (day > 9 ? day : '0'+day);
-      return date;
-    },
-    getSTimeDetail (sTime) {
-      var minTen = function(val){
-          return val > 9 ? val : '0'+val;
-      }
-      var myDate = new Date(sTime)
-      var month = minTen(myDate.getMonth() + 1);
-      var day = minTen(myDate.getDate());
-      var hour = minTen(myDate.getHours());
-      var minutes = minTen(myDate.getMinutes());
-      var seconds = minTen(myDate.getSeconds()); 
-      usersCls
-      var date = myDate.getFullYear() + "-" + month + "-" + day +" "+ hour + ":" + minutes + ":" + seconds;
-      return date;
-    },
-    /*获取列表数据，代表查询*/
-    handleClick () {
-       this.getPagedData();
-    },
-    //充值
-    moneyFun(){
-        this.$router.push('/advHome/recharge');
+    /* 获取列表数据，代表查询*/
+    searchUsersFun() {
+      this.getPagedData();
     }
   }
 }
 </script>
-<style>
+<style rel="stylesheet/scss" lang="scss" scoped>
   .usersCls {
-   
-  }
-  .usersCls .mainTopCls{
-    margin-left: 26px;
-  }
-  .usersCls .contentCls{
+   .mainTopCls{
+      margin-left: 26px;
+    }
+   .contentCls{
       border-radius:3px;
       background:rgba(255,255,255,1);
+      .tableCls{
+        padding: 9px 26px 20px 26px;
+        .el-table th{
+          background-color: #f7f7f7;
+        }
+        .el-dialog__header{
+          background-color: #f7f7f7;
+        }
+        .operaCls{
+          text-align: center;
+        }
+      }
+      .toolbarCls{
+        padding:15px 26px 5px 26px;
+        text-align: left;
+        .el-input{
+          width: 210px;
+        }
+        .newTbarCls{
+            margin-top: 15px;
+        }
+        .el-date-editor{
+          float: right;
+        }
+      }
+      .el-cm {
+          width: 100%;
+          margin-top:10px;
+          background:rgba(255,255,255,1);
+          font-size:18px;
+          font-family:MicrosoftYaHei;
+          color:rgba(41,38,38,1);
+      }
+      .el-pagination{
+          text-align: center;
+      }
+      .addWinCls{
+        .el-select{
+          width: 100%;
+        }
+      }
     }
-   
-  .usersCls .contentCls  .tableCls{
-    padding: 9px 26px 20px 26px;
-  }
-  .usersCls .contentCls .toolbarCls{
-     padding:15px 26px 5px 26px;
-     text-align: left;
-  }
-  .usersCls .contentCls .toolbarCls .el-input{
-     width: 210px;
-  }
-  .usersCls .contentCls .toolbarCls .newTbarCls{
-      margin-top: 15px;
-  }
-  .usersCls .contentCls .tableCls.el-table th{
-    background-color: #f7f7f7;
-  }
-  .usersCls .contentCls .tableCls .el-dialog__header{
-    background-color: #f7f7f7;
-  }
-  .usersCls .contentCls .tableCls .operaCls{
-    text-align: center;
-  }
-  .usersCls .toolbarCls .el-date-editor{
-    float: right;
-  }
- 
-  .usersCls .contentCls .el-cm {
-      width: 100%;
-      margin-top:10px;
-      background:rgba(255,255,255,1);
-      font-size:18px;
-      font-family:MicrosoftYaHei;
-      color:rgba(41,38,38,1);
-  }
- 
-  .usersCls .contentCls .el-pagination{
-      text-align: center;
   }
 </style>

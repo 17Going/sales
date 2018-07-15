@@ -9,7 +9,7 @@ const image_uri = 'https://wpimg.wallstcn.com/e4558086-631c-425c-9430-56ffb46e70
 
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
-    id: '@increment',
+    customerName: '@increment',
     timestamp: +Mock.Random.date('T'),
     author: '@first',
     reviewer: '@first',
@@ -23,6 +23,27 @@ for (let i = 0; i < count; i++) {
     display_time: '@datetime',
     comment_disabled: true,
     pageviews: '@integer(300, 5000)',
+    image_uri,
+    platforms: ['a-platform']
+  }))
+}
+const SalesManagement = []
+for (let i = 0; i < count; i++) {
+  SalesManagement.push(Mock.mock({
+    customerName: '百度' + i, // 客户名称
+    salesman: '@first', // 业务员
+    lastProtectionDays: i, // 剩余保护天数
+    follow_up: '@first', // 最近跟进
+    legalPersonName: '张三' + i, // 法人姓名
+    registeredCapital: i * 10000, // 注册资本
+    customerSource: '李四介绍', // 客户来源
+    region: '上海', // 所属区域
+    phoneFollow_up: '185*', // 电话跟进
+    visitFollow_up: i, // 拜访跟进
+    singleRecord: true, // 理单记录
+    personalRating: '@integer(300, 5000)', //  个人评级
+    managerRating: '@integer(300, 5000)', //  经理评级
+    businessGuidance: '@integer(300, 5000)', //  经理评级
     image_uri,
     platforms: ['a-platform']
   }))
@@ -66,5 +87,26 @@ export default {
   }),
   updateArticle: () => ({
     data: 'success'
-  })
+  }),
+  getSalesManagement: config => {
+    const { importance, type, title, page = 1, limit = 20, sort } = param2Obj(config.url)
+
+    let mockList = SalesManagement.filter(item => {
+      if (importance && item.importance !== +importance) return false
+      if (type && item.type !== type) return false
+      if (title && item.title.indexOf(title) < 0) return false
+      return true
+    })
+
+    if (sort === '-id') {
+      mockList = mockList.reverse()
+    }
+
+    const pageList = mockList.filter((item, index) => index < limit * page && index >= limit * (page - 1))
+
+    return {
+      total: mockList.length,
+      items: pageList
+    }
+  }
 }
