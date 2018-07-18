@@ -19,12 +19,12 @@
                     </el-select>
                 </el-col>
                 <el-col :xs="8" :md="2" :lg="7" :xl="8">
-                  <el-button type="danger" @click="searchUsersFun()">立即查询</el-button>
+                  <el-button type="danger" @click="searchUsersFun()"  icon="el-icon-search">立即查询</el-button>
                 </el-col>
             </el-row>
           </div>
           <div class="newTbarCls">
-            <el-button type="danger" @click="addUsersFun()">新增用户</el-button>
+            <el-button type="danger" @click="addUsersFun()" icon="el-icon-plus">新增用户</el-button>
           </div>
         </div>
         <div class="tableCls">
@@ -74,17 +74,17 @@
                 </template>
               </el-table-column>
               
-              <el-table-column  prop="userOpera" :label="usersLabelObj.userOpera" width="160">
+              <el-table-column  prop="userOpera" :label="usersLabelObj.userOpera" width="220">
                 <template slot-scope='scope'>
-                  <el-row class='operaCls' :gutter="20">
+                  <el-row class='operaCls' :gutter="5">
                       <el-col :span='8'>
-                        <el-button type="text" @click="modifyUserFun(scope.row)">{{usersLabelObj.labelBtnEdit}}</el-button>
+                        <el-button type="text" @click="modifyUserFun(scope.row)" icon="el-icon-edit">{{usersLabelObj.labelBtnEdit}}</el-button>
                       </el-col>
                       <el-col :span='8'>
-                        <el-button type="text">{{usersLabelObj.labelBtnDis}}</el-button>
+                        <el-button type="text" >{{usersLabelObj.labelBtnDis}}</el-button>
                       </el-col>
                       <el-col :span='8'>
-                        <el-button type="text">{{usersLabelObj.labelBtnDel}}</el-button>
+                        <el-button type="text" icon="el-icon-delete">{{usersLabelObj.labelBtnDel}}</el-button>
                       </el-col>
                   </el-row>
 
@@ -112,8 +112,8 @@
                   </el-form-item>
 
                    <el-form-item :label="usersLabelObj.labelJob">
-                     <el-select class="filter-item" v-model="userCfgForm.jobName" placeholder="Please select" @focus='getJobFun' @change='newJobFun'>
-                      <el-option v-for="item in jobData" :key="item.id" :label="item.jobName" :value="item">
+                     <el-select class="filter-item" v-model="userCfgForm.jobName" :placeholder="usersLabelObj.postsEmptyTxt" @focus='getJobFun' @change='newJobFun'>
+                      <el-option v-for="item in jobData" :key="item.id" :label="item.jobName" :value="item.id">
                       </el-option>
                     </el-select>
                   </el-form-item>
@@ -173,7 +173,7 @@ export default {
         userName: '',
         phone: '',
         email: '',
-        cap: '',
+        cap: '30',
         jobNewName: '',
         jobName: ''
       },
@@ -196,9 +196,9 @@ export default {
         txtDeleted: '已离职',
         txtDisable: '禁用',
         labelBtnOK: '确定',
-        labelBtnEdit: '[修改]',
-        labelBtnDis: '[禁用]',
-        labelBtnDel: '[离职]',
+        labelBtnEdit: '修改',
+        labelBtnDis: '禁用',
+        labelBtnDel: '离职',
         userCfgTitle: '新增用户',
         userAddTitle: '新增用户',
         userEditTitle: '修改用户',
@@ -207,6 +207,7 @@ export default {
         labelPhone: '手机号码',
         labelEmail: '邮箱',
         labelCapacity: '客户池容量',
+        postsEmptyTxt: '请选择职位',
         userCfgInfo: '注：试用企业最多可添加10个用户，客户池容量最高30，开通正式版可享受更多权益。'
       },
       isLoading: false,
@@ -303,25 +304,24 @@ export default {
           jobName: '-- 新建职位 --'
         });
         this.jobData.unshift({
-          id: '',
+          id: '-2',
           jobName: '-- NONE --'
         });
         this.isFrist = false;
       }
     },
     // 新建职位接口
-    newJobFun(item) {
-      const val = item.id;
-      if (val === '') {
+    newJobFun(val) {
+      if (val === '-2') {
         this.isShowJob = false;
       } else {
         this.isShowJob = true;
         if (val === '-1') {
-          this.userCfgForm.jobName = '-- 新建职位 --';
           this.userCfgForm.jobNewName = '';
         } else {
-          this.userCfgForm.jobName = item.jobName;
-          this.userCfgForm.jobNewName = item.jobName;
+          this.userCfgForm.jobNewName = this.jobData.find((item) => {
+            return item.id === val;
+          }).jobName;
         }
       }
     },
@@ -341,7 +341,7 @@ export default {
         userName: '',
         phone: '',
         email: '',
-        cap: '',
+        cap: '30',
         jobNewName: '',
         jobName: ''
       }
@@ -392,6 +392,13 @@ export default {
         padding: 9px 26px 20px 26px;
         .el-table th{
           background-color: #f7f7f7;
+        }
+        .el-button{
+          background-color: #fef9f9;
+          border-radius: 3px;
+          border: 1px solid #f1afaf;
+          color: #e15151;
+          padding: 5px 10px;
         }
         .el-dialog__header{
           background-color: #f7f7f7;

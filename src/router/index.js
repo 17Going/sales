@@ -71,16 +71,6 @@ export const asyncRouterMap = [
         path: 'organizational', // 组织架构路由
         component: () => import('@/views/management/EOS'),
         name: 'organizational',
-        redirect: 'noredirect',
-        children: [{
-          path: 'enterpriseUser',
-          component: () => import('@/views/management/enterpriseUser'),
-          name: 'users',
-          meta: {
-            title: 'usetNnme',
-            icon: 'user'
-          }
-        }],
         meta: {
           title: 'organizational',
           icon: 'peoples'
@@ -107,7 +97,7 @@ export const asyncRouterMap = [
           icon: 'documentation'
           // if do not set roles, means: this page does not require permission
         }
-      }, {
+      }/* , {
         path: 'customerSupports',
         component: () => import('@/views/management/customerSupports'),
         name: 'customerSupports',
@@ -115,7 +105,7 @@ export const asyncRouterMap = [
           title: 'customerSupports',
           icon: 'eye'
         }
-      }]
+      } */]
   },
   { // 客户
     path: '/customer',
