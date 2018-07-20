@@ -11,7 +11,7 @@
                 {{usersLabelObj.labelSearchTxt}}&nbsp;&nbsp;&nbsp;&nbsp;<el-input v-model='searchPhoneORname' :placeholder="usersLabelObj.labelSearchTxt"></el-input>
                </el-col> 
                 <el-col :xs="8" :md="11" :lg="8" :xl="6">
-                    {{usersLabelObj.labelStateTxt}}&nbsp;&nbsp;&nbsp;&nbsp; <el-select v-model="userState" placeholder="请选择">
+                    {{usersLabelObj.labelStateTxt}}&nbsp;&nbsp;&nbsp;&nbsp; <el-select v-model="userState">
                       <el-option :label='usersLabelObj.txtAll' value='' checked></el-option>
                       <el-option :label='usersLabelObj.txtNormal' value='0'></el-option>
                       <el-option :label='usersLabelObj.txtDisable' value='2'></el-option>
@@ -19,12 +19,12 @@
                     </el-select>
                 </el-col>
                 <el-col :xs="8" :md="2" :lg="7" :xl="8">
-                  <el-button type="danger" @click="searchUsersFun()"  icon="el-icon-search">立即查询</el-button>
+                  <el-button type="danger" @click="searchUsersFun()"  icon="el-icon-search">{{usersLabelObj.queryBtnText}}</el-button>
                 </el-col>
             </el-row>
           </div>
           <div class="newTbarCls">
-            <el-button type="danger" @click="addUsersFun()" icon="el-icon-plus">新增用户</el-button>
+            <el-button type="danger" @click="addUsersFun()" icon="el-icon-plus">{{usersLabelObj.addBtnText}}</el-button>
           </div>
         </div>
         <div class="tableCls">
@@ -141,7 +141,7 @@
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                   <el-button type="danger" @click="submitUserForm('userCfgForm')">{{usersLabelObj.labelBtnOK}}</el-button>
-                  <el-button type="danger" @click="submitUserForm('userCfgForm')">{{usersLabelObj.labelBtnOK}}</el-button>
+                  <el-button type="info" @click="submitUserForm('userCfgForm')">{{usersLabelObj.labelBtnCancel}}</el-button>
                 </div>
               </el-dialog>
         </div>
@@ -181,6 +181,8 @@ export default {
         userName: [{ required: true, message: '请输入名称', trigger: 'blur' }]
       },
       usersLabelObj: {
+        addBtnText: '添加',
+        queryBtnText: '立即查询',
         userPhone: '电话',
         userName: '姓名',
         userDpm: '部门[职位]',
@@ -196,6 +198,7 @@ export default {
         txtDeleted: '已离职',
         txtDisable: '禁用',
         labelBtnOK: '确定',
+        labelBtnCancel: '取消',
         labelBtnEdit: '修改',
         labelBtnDis: '禁用',
         labelBtnDel: '离职',
@@ -393,18 +396,18 @@ export default {
         .el-table th{
           background-color: #f7f7f7;
         }
-        .el-button{
-          background-color: #fef9f9;
-          border-radius: 3px;
-          border: 1px solid #f1afaf;
-          color: #e15151;
-          padding: 5px 10px;
-        }
         .el-dialog__header{
           background-color: #f7f7f7;
         }
         .operaCls{
           text-align: center;
+           .el-button{
+            background-color: #fef9f9;
+            border-radius: 3px;
+            border: 1px solid #f1afaf;
+            color: #e15151;
+            padding: 5px 10px;
+          }
         }
       }
       .toolbarCls{
@@ -418,6 +421,14 @@ export default {
         }
         .el-date-editor{
           float: right;
+        }
+        .el-button{
+          background-color: #fef9f9;
+          border-radius: 3px;
+          border: 1px solid #f1afaf;
+          color: #e15151;
+          padding: 5px 10px;
+          margin-top: 5px;
         }
       }
       .el-cm {

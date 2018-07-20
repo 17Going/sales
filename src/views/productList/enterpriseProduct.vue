@@ -15,16 +15,15 @@
                     </el-select>
                 </el-col>
                 <el-col :xs="4" :md="6" :lg="12" :xl="16">
-                  <el-button type="danger" @click="queryMethod()">{{productLabelObj.queryBtnTxt}}</el-button>
+                  <el-button type="danger" @click="queryMethod()" class="el-icon-search">{{productLabelObj.queryBtnTxt}}</el-button>
                 </el-col>
             </el-row>
           </div>
           <div class="newTbarCls">
-            <el-button type="danger" @click="addUsersFun()">{{productLabelObj.addBtnTxt}}</el-button>
+            <el-button type="danger" @click="addUsersFun()" class="el-icon-plus">{{productLabelObj.addBtnTxt}}</el-button>
           </div>
         </div>
         <div class="tableCls">
-            
             <el-table v-loading="isLoading" :data="tableData" 
                 :default-sort = "{prop: 'pName', order: 'descending'}" style="width: 100%" max-height="500" border>
               <!-- 产品名称 -->
@@ -56,7 +55,7 @@
                 <template slot-scope='scope'>
                   <el-row class='operaCls' :gutter="20">
                       <el-col :span='24'>
-                        <el-button type="text" @click="modifyUserFun(scope.row)">[修改]</el-button>
+                        <el-button type="text" class="el-icon-edit" @click="modifyUserFun(scope.row)">{{productLabelObj.editBtnTxt}}</el-button>
                       </el-col>
                      <!-- <el-col :span='8'>
                         <el-button type="text">[禁用]</el-button>
@@ -115,6 +114,11 @@
                   </el-row>
                  
                   <div>
+                    <div class="ruleToolbarCls">
+                      <el-button class="el-icon-plus" type="danger" @click="addRules()">{{productLabelObj.addBtnTxt}}</el-button>
+                      <el-button class="el-icon-delete" type="danger" @click="delRules()">{{productLabelObj.delBtnTxt}}</el-button>
+                    </div>
+                    <div class="tableCls">
                     <el-table v-loading="isLoadingRule" :data="tableData2" 
                       :default-sort = "{prop: 'pName', order: 'descending'}" style="width: 100%" max-height="500" border>
                       <!-- 规格名称 -->
@@ -165,6 +169,7 @@
                         </template>
                       </el-table-column>
                   </el-table>
+                  </div>
                  </div>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -220,11 +225,13 @@ export default {
         txtEnable: '已启用',
         txtDisable: '未启用',
         queryBtnTxt: '立即查询',
-        addBtnTxt: '新增产品',
+        addBtnTxt: '新增',
+        editBtnTxt: '修改',
         labelBtnOK: '确定',
         cfgTitle: '新增产品',
         addTitle: '新增产品',
         editTitle: '修改产品',
+        delBtnTxt: '删除',
         ruleName: '规则名称',
         ruleImg: '照片',
         upBtnTxt: '上传',
@@ -395,7 +402,24 @@ export default {
           }
           .operaCls{
             text-align: center;
+            .el-button{
+              background-color: #fef9f9;
+              border-radius: 3px;
+              border: 1px solid #f1afaf;
+              color: #e15151;
+              padding: 5px 10px;
+            }
           }
+        }
+        .ruleToolbarCls{
+           padding:15px 26px 5px 26px;
+           .el-button{
+              background-color: #fef9f9;
+              border-radius: 3px;
+              border: 1px solid #f1afaf;
+              color: #e15151;
+              padding: 5px 10px;
+            }
         }
         .toolbarCls{
           padding:15px 26px 5px 26px;
@@ -408,6 +432,14 @@ export default {
           }
           .newTbarCls{
               margin-top: 15px;
+          }
+          .el-button{
+            background-color: #fef9f9;
+            border-radius: 3px;
+            border: 1px solid #f1afaf;
+            color: #e15151;
+            padding: 5px 10px;
+            margin-top: 5px;
           }
         }
         .el-cm {

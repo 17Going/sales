@@ -52,7 +52,7 @@
               </div>
               </div>
             </el-tab-pane>
-            <el-tab-pane label="承担客户保护期" name="assumeTab">
+            <el-tab-pane label="成单客户保护期" name="assumeTab">
                <div class="toolbarCls"><i class="el-icon-warning"></i>{{labelObj.assumeInfo}}</div>
                <div class="tableCls">
                <el-table v-loading="isLoading" :data="assumeData" 
@@ -143,7 +143,8 @@
                <el-form :model="orderForm" :rules="orderRules" ref="orderForm" label-width="138px" label-position="left">
                   <!-- 保护期开始计算日期 -->
                   <el-form-item :label="labelObj.protectStartTime" >
-                    <el-input v-model='orderForm.protectStartTime'></el-input>
+                     <el-radio v-model="orderForm.protectStartTime" :label="0" >{{labelObj.labelStartTim}}</el-radio>
+                     <el-radio v-model="orderForm.protectStartTime" :label="1" >{{labelObj.labelEndTim}}</el-radio>
                   </el-form-item>
                   <!-- 保护天数 -->
                   <el-form-item :label="labelObj.protectDays" >
@@ -179,7 +180,7 @@ export default {
       labelObj: {
         addProtect: '新增保护期',
         protectInfo: '开放池客户冻结期（同一销售人员在此期间不得拉回之前属于自己的客户） 0 天 ',
-        assumeInfo: '承担客户保护期过期后将自动变为流失客户，届时可在公海拉入。',
+        assumeInfo: '成单客户保护期过期后将自动变为流失客户，届时可在公海拉入。',
         descInfo: '注：同一销售人员（主跟进人）在此期间不得拉回之前属于自己的客户。',
         protectType: '保护期类型',
         useDept: '使用部门',
@@ -196,6 +197,8 @@ export default {
         /* BEGIN: 保护期配置窗口*/
         protectNewTitle: '新增保护期',
         protecEditTitle: '修改保护期',
+        labelStartTim: '合同签订日期',
+        labelEndTim: '合同结束日期',
         // protectType: '保护期类型',
         // useDept: '使用部门',
         // protectDays: '保护天数',
@@ -215,11 +218,11 @@ export default {
         protectDays: '15',
         continueUpdate: '更新保护期'
       }],
-      // 承担客户列表数据
+      // 成单客户列表数据
       assumeData: [{
         protectType: '添加新客户',
         protectDays: '30',
-        protectStartTime: '合同签订日期',
+        protectStartTime: 1,
         enableStatus: 1
       }],
       dialogFreezeForm: false,
@@ -237,7 +240,7 @@ export default {
       protectRules: {},
       dialogOrderForm: false,
       orderForm: {
-        protectStartTime: '',
+        protectStartTime: 0,
         protectDays: '',
         enableStatus: 0
       },
@@ -274,7 +277,7 @@ export default {
       this.dialogOrderForm = true;
       this.orderForm = {
         protectDays: '30',
-        protectStartTime: '合同签订日期',
+        protectStartTime: 1,
         enableStatus: 1
       }
     },

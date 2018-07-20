@@ -13,8 +13,8 @@
                     <el-input :placeholder='postsLabelObj.jobName'></el-input>
                 </el-col>
                 <el-col :span='10'>
-                    <el-button type="danger" @click="addPostsFun()">添加职位</el-button>
-                    <el-button type="danger" @click="delPostsFun()">删除职位</el-button>
+                    <el-button class="el-icon-plus" type="danger" @click="addPostsFun()">{{postsLabelObj.addBtnText}}</el-button>
+                    <el-button class="el-icon-delete" type="danger" @click="delPostsFun()">{{postsLabelObj.delBtnText}}</el-button>
                 </el-col>
             </el-row>
             <!-- 扩展职位可以绑定部门
@@ -43,7 +43,7 @@
               <el-table-column prop="jobName" :label="postsLabelObj.jobName">
                 <template slot-scope='scope'>
                   <span v-if='!scope.row.editJobName'>
-                    {{scope.row.jobName}}
+                    <el-button  type="text" @click="modifyPostsFun(scope.row)">{{scope.row.jobName}}</el-button>
                     <!-- <el-button type="text" @click="unbindPosts(scope.row)" title='解除职位与所有部门的绑定'>[解绑职位]</el-button> -->
                    </span>
                    <span v-if='scope.row.editJobName' >
@@ -60,8 +60,8 @@
                     </el-col> -->
                 
                     <el-col :span='24'>
-                        <el-button v-if='!scope.row.editJobName' type="text" @click="modifyPostsFun(scope.row)">[修改]</el-button>
-                        <el-button v-if='scope.row.editJobName' type="text" @click="modifyApply(scope.row)">[确认修改]</el-button>
+                        <el-button class="el-icon-edit" v-if='!scope.row.editJobName' type="text" @click="modifyPostsFun(scope.row)">修改</el-button>
+                        <el-button class="el-icon-check" v-if='scope.row.editJobName' type="text" @click="modifyApply(scope.row)">确认修改</el-button>
                     </el-col>
                 </el-row>
                 </template>
@@ -100,6 +100,8 @@ export default {
       dialogBindCfgForm: false, // 绑定部门配置form
       userCompany: '华为公司',
       postsLabelObj: {
+        addBtnText: '添加',
+        delBtnText: '删除',
         titleTxt: '当前部门是：',
         depName: '部门',
         jobName: '职位名称',
@@ -210,6 +212,25 @@ export default {
       margin: 20px;
       .toolbarCls{
         margin-bottom: 10px;
+        .el-button{
+          background-color: #fef9f9;
+          border-radius: 3px;
+          border: 1px solid #f1afaf;
+          color: #e15151;
+          padding: 5px 10px;
+          margin-top: 5px;
+        }
+      }
+      .tableCls{
+        .operaCls{
+          .el-button{
+            background-color: #fef9f9;
+            border-radius: 3px;
+            border: 1px solid #f1afaf;
+            color: #e15151;
+            padding: 5px 10px;
+          }
+        }
       }
     }
 </style>
