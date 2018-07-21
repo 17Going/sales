@@ -4,17 +4,17 @@
         <div class="toolbarCls">
           <div class="demo-input-suffix">
             <el-row>
-              <el-col :xs="10" :md="9" :lg="6" :xl="4">
+              <el-col :xs="10" :md="9" :lg="6" :xl="5">
                 {{productLabelObj.labelSearchTxt}}&nbsp;&nbsp;&nbsp;&nbsp;<el-input v-model='pName' :placeholder="productLabelObj.labelSearchTxt"></el-input>
                </el-col> 
-                <el-col :xs="10" :md="9" :lg="6" :xl="4">
+                <el-col :xs="10" :md="9" :lg="6" :xl="5">
                     {{productLabelObj.labelStateTxt}}&nbsp;&nbsp;&nbsp;&nbsp; <el-select v-model="status" placeholder="请选择">
                       <el-option :label='productLabelObj.txtAll' value='' checked></el-option>
                       <el-option :label='productLabelObj.txtEnable' value='1'></el-option>
                       <el-option :label='productLabelObj.txtDisable' value='0'></el-option> 
                     </el-select>
                 </el-col>
-                <el-col :xs="4" :md="6" :lg="12" :xl="16">
+                <el-col :xs="4" :md="6" :lg="12" :xl="14">
                   <el-button type="danger" @click="queryMethod()" class="el-icon-search">{{productLabelObj.queryBtnTxt}}</el-button>
                 </el-col>
             </el-row>
@@ -47,7 +47,14 @@
               <!-- 状态 -->
               <el-table-column  prop="status" :label="productLabelObj.status">
                 <template slot-scope='scope'>
-                  <p>{{getStatus(scope.row.status)}}</p>
+                  <el-switch
+                    v-model='scope.row.status'
+                    :active-value='0'
+                    :inactive-value='1'
+                    active-color="#13ce66"
+                    :active-text="productLabelObj.txtEnable"
+                    :inactive-text="productLabelObj.txtDisable">
+                  </el-switch>
                 </template>
               </el-table-column>
               <!-- 操作 -->
@@ -119,8 +126,14 @@
                       <el-button class="el-icon-delete" type="danger" @click="delRules()">{{productLabelObj.delBtnTxt}}</el-button>
                     </div>
                     <div class="tableCls">
-                    <el-table v-loading="isLoadingRule" :data="tableData2" 
+                    <el-table ref="multipleTable" v-loading="isLoadingRule" :data="tableData2" @selection-change="handleSelectionChange"
                       :default-sort = "{prop: 'pName', order: 'descending'}" style="width: 100%" max-height="500" border>
+                      <!-- checkbox -->
+                      <el-table-column type="selection" width="55">
+                      </el-table-column>
+                      <!-- index -->
+                      <el-table-column type="index" width="50" >
+                      </el-table-column>
                       <!-- 规格名称 -->
                       <el-table-column sortable  prop="ruleName" :label="productLabelObj.ruleName" >
                         <template slot-scope='scope'>
@@ -140,6 +153,7 @@
                               v-model='scope.row.status'
                               :active-value='0'
                               :inactive-value='1'
+                              active-color="#13ce66"
                               :active-text="productLabelObj.activeOnText"
                               :inactive-text="productLabelObj.unActiveText">
                             </el-switch>
@@ -181,7 +195,11 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
 import { userGetList } from '@/api/management'
+/* eslint-disable */
+import '@/utils/Underscore'
+
 export default {
   name: 'table',
   props: ['depId', 'depName'],
@@ -320,24 +338,32 @@ export default {
       }) */
     },
     /* END: 分页必备 */
+    // 选中表格某一行时触发
+    handleSelectionChange(val) {
+      // 扩展代码
+    },
     /* 获取产品规则的信息*/
     getProRule() {
       this.tableData2 = [{
+        index: 0,
         ruleName: 'mate系列',
         price: '5899',
         status: 0,
         img: ''
       }, {
+        index: 1,
         ruleName: 'P系列',
         price: '2999',
         status: 1,
         img: ''
       }, {
+        index: 2,
         ruleName: '平板系列',
         price: '1999',
         status: 0,
         img: ''
       }, {
+        index: 3,
         ruleName: '畅享系列',
         price: '999',
         status: 1,
@@ -382,6 +408,17 @@ export default {
     /* 获取列表数据，代表查询*/
     queryMethod() {
       this.getPagedData();
+    },
+    // 添加新的产品规则
+    addRules() {
+      // 扩展代码
+    },
+    // 删除选中的产品规则
+    delRules() {
+      // 扩展代码
+      const selectRows = this.$refs.multipleTable.store.states.selection;
+      // 使用Underscore.js中的方法删除数组
+      this.tableData2 = _.without(this.tableData2, ...selectRows);
     }
   }
 }

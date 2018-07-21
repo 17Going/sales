@@ -2,7 +2,7 @@
   <div class="mainCls">
      <div class="contentCls">
         <el-tabs v-model="activeName" type="card" >
-            <el-tab-pane label="电话跟进" name="phoneTab">
+            <el-tab-pane :label="labelObj.tabPhoneTitle" name="phoneTab" >
                 <div>
                     <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="138px" style='width: 400px; margin-left:50px;'>
                         <el-form-item :label="labelObj.followName" prop="followName">
@@ -26,7 +26,7 @@
                         </el-form-item>
 
                         <el-form-item :label="labelObj.contactCase">
-                        <el-select class="filter-item" v-model="temp.contactCase" placeholder="联系情况" disabled>
+                        <el-select class="filter-item" v-model="temp.contactCase" :placeholder="labelObj.contactCase" disabled>
                             <el-option v-for="item in []" :key="item" :label="item" :value="item">
                             </el-option>
                         </el-select>
@@ -47,7 +47,7 @@
                     </div>
                 </div>
             </el-tab-pane>
-            <el-tab-pane label="拜访跟进" name="visitTab">
+            <el-tab-pane :label="labelObj.tabTitle" name="visitTab">
                 <div>
                  <el-form :rules="rules" ref="dataForm" :model="temp" label-position="left" label-width="138px" style='width: 400px; margin-left:50px;'>
                     <!-- 跟进方式名称 -->
@@ -122,6 +122,8 @@ export default {
       temp: {},
       dataForm: {},
       labelObj: {
+        tabPhoneTitle: '电话跟进',
+        tabTitle: '拜访跟进',
         followName: '跟进方式名称',
         customerName: '客户名称',
         contactName: '联系人',

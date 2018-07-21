@@ -35,6 +35,7 @@
           <el-input v-model="temp.endDate" disabled></el-input>
         </el-form-item>
       </el-form>
+      <field></field>
       <div slot="footer" class="dialog-footer">
         <el-button  type="danger" >{{labelObj.btnSaveText}}</el-button>
       </div>
@@ -43,8 +44,9 @@
 </template>
 
 <script>
-
+import field from './field'
 export default {
+  components: { field },
   data() {
     return {
       rules: {},

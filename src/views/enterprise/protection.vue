@@ -2,7 +2,7 @@
   <div class="mainCls">
      <div class="contentCls">
         <el-tabs v-model="activeName" type="card" >
-            <el-tab-pane label="私海保护期" name="privateSeaTab">
+            <el-tab-pane :label="labelObj.tabPriTitle" name="privateSeaTab">
             <div class="tabCls">
               <div class="toolbarCls">
                 <el-row>
@@ -52,7 +52,7 @@
               </div>
               </div>
             </el-tab-pane>
-            <el-tab-pane label="成单客户保护期" name="assumeTab">
+            <el-tab-pane :label="labelObj.tabTitle" name="assumeTab">
                <div class="toolbarCls"><i class="el-icon-warning"></i>{{labelObj.assumeInfo}}</div>
                <div class="tableCls">
                <el-table v-loading="isLoading" :data="assumeData" 
@@ -78,7 +78,14 @@
                  <!-- 启用状态 -->
                 <el-table-column  prop="enableStatus" :label="labelObj.enableStatus" >
                     <template slot-scope='scope'>
-                    <p>{{scope.row.enableStatus === 1 ? labelObj.labelEnable : labelObj.labelDisable}}</p>
+                      <el-switch
+                        v-model='scope.row.enableStatus'
+                        :active-value='0'
+                        :inactive-value='1'
+                        active-color="#13ce66"
+                        :active-text="labelObj.labelEnable"
+                        :inactive-text="labelObj.labelDisable">
+                      </el-switch>
                     </template>
                 </el-table-column>
                  <!-- 操作 -->
@@ -114,11 +121,19 @@
                <el-form :model="protectForm" :rules="protectRules" ref="protectForm" label-width="138px" label-position="left">
                   <!-- 类型 -->
                   <el-form-item :label="labelObj.protectType" >
-                    <el-input v-model='protectForm.protectType'></el-input>
+                    <el-select v-model='protectForm.protectType'>
+                        <el-option :value="1" :label="labelObj.labelAddCus"></el-option>
+                        <el-option :value="2" :label="labelObj.labelAddFollw"></el-option>
+                        <el-option :value="3" :label="labelObj.labelAddRecord"></el-option>
+                    </el-select>
+                       
                   </el-form-item>
                   <!-- 使用部门 -->
                   <el-form-item :label="labelObj.useDept" >
-                    <el-input v-model='protectForm.useDept'></el-input>
+                    <treeselect :normalizer="normalizer" :multiple="true" :default-expand-level='2' @focus="getSelectList" v-model="protectForm.parentName"  :options="deptData" />
+                      <label  slot="option-label" slot-scope="{ node, shouldShowCount, count, labelClassName, countClassName }" :class="labelClassName">
+                        {{ node.depName}} 
+                      </label>
                   </el-form-item>
                   <!-- 保护天数 -->
                   <el-form-item :label="labelObj.protectDays" >
@@ -170,14 +185,32 @@
 </template>
 
 <script>
+import { departmentGetList } from '@/api/management'
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+
 export default {
+  components: {
+    Treeselect
+  },
   data() {
     return {
       activeName: 'privateSeaTab',
       rules: {},
       temp: {},
       dataForm: {},
+      deptData: [], // 部门的数据
+      // 格式化数据键的格式
+      normalizer(node) {
+        return {
+          id: node.id,
+          label: node.depName,
+          children: node.children
+        }
+      },
       labelObj: {
+        tabPriTitle: '私海保护期',
+        tabTitle: '成单客户保护期',
         addProtect: '新增保护期',
         protectInfo: '开放池客户冻结期（同一销售人员在此期间不得拉回之前属于自己的客户） 0 天 ',
         assumeInfo: '成单客户保护期过期后将自动变为流失客户，届时可在公海拉入。',
@@ -197,6 +230,9 @@ export default {
         /* BEGIN: 保护期配置窗口*/
         protectNewTitle: '新增保护期',
         protecEditTitle: '修改保护期',
+        labelAddCus: '添加新客户',
+        labelAddFollw: '新增跟进记录',
+        labelAddRecord: '新增理单记录',
         labelStartTim: '合同签订日期',
         labelEndTim: '合同结束日期',
         // protectType: '保护期类型',
@@ -213,14 +249,14 @@ export default {
       isLoading: false,
       // 私海保护列表数据
       privateData: [{
-        protectType: '添加新客户',
+        protectType: 1,
         useDept: '全公司',
         protectDays: '15',
         continueUpdate: '更新保护期'
       }],
       // 成单客户列表数据
       assumeData: [{
-        protectType: '添加新客户',
+        protectType: 1,
         protectDays: '30',
         protectStartTime: 1,
         enableStatus: 1
@@ -234,6 +270,7 @@ export default {
       protectForm: {
         protectType: '',
         useDept: '',
+        parentName: '',
         protectDays: '',
         continueUpdate: ''
       },
@@ -247,7 +284,36 @@ export default {
       orderRules: {}
     }
   },
+  mounted() {
+    this.getDeptList();
+  },
   methods: {
+    // 获取列表的数据
+    getDeptList() {
+      const _this = this;
+      departmentGetList().then(response => {
+        if (response.data.code === '0') {
+          _this.deptData = JSON.parse(JSON.stringify([response.data.data]));
+        } else {
+          _this.$message.error();
+          // 扩展使用
+        }
+      })
+    },
+    // 获取移动下拉框的数据
+    getSelectList() {
+      const _this = this;
+      // _this.isLoading = true;
+      departmentGetList().then(response => {
+        //  _this.isLoading = false;
+        if (response.data.code === '0') {
+          window.abc = response.data.data;
+          _this.deptData = JSON.parse(JSON.stringify([response.data.data]));
+        } else {
+          // 扩展使用
+        }
+      })
+    },
     cfgFreezeDays() {
       this.dialogFreezeForm = true;
     },
@@ -268,6 +334,7 @@ export default {
       this.dialogProtectForm = false;
       this.protectForm = {
         protectType: '',
+        parentName: '',
         useDept: '',
         protectDays: '',
         continueUpdate: ''
