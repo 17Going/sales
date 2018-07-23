@@ -131,9 +131,6 @@
                       <!-- checkbox -->
                       <el-table-column type="selection" width="55">
                       </el-table-column>
-                      <!-- index -->
-                      <el-table-column type="index" width="50" >
-                      </el-table-column>
                       <!-- 规格名称 -->
                       <el-table-column sortable  prop="ruleName" :label="productLabelObj.ruleName" >
                         <template slot-scope='scope'>

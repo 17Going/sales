@@ -10,7 +10,7 @@
           <div class="demo-input-suffix">
             <el-row class='operaCls' :gutter="20">
                 <el-col :span='5'>
-                    <el-input :placeholder='postsLabelObj.jobName'></el-input>
+                    <el-input v-model="jobName" :placeholder='postsLabelObj.jobName'></el-input>
                 </el-col>
                 <el-col :span='10'>
                     <el-button class="el-icon-plus" type="danger" @click="addPostsFun()">{{postsLabelObj.addBtnText}}</el-button>
@@ -27,7 +27,7 @@
         </div>
 
         <div class="tableCls">
-            <el-table v-loading="isLoading" :data="postsData" 
+            <el-table ref="multipleTable" v-loading="isLoading" :data="postsData" 
                 style="width: 100%"  border>
                  <el-table-column
                 type="selection"
@@ -60,8 +60,8 @@
                     </el-col> -->
                 
                     <el-col :span='24'>
-                        <el-button class="el-icon-edit" v-if='!scope.row.editJobName' type="text" @click="modifyPostsFun(scope.row)">修改</el-button>
-                        <el-button class="el-icon-check" v-if='scope.row.editJobName' type="text" @click="modifyApply(scope.row)">确认修改</el-button>
+                        <el-button class="el-icon-edit" v-if='!scope.row.editJobName' type="text" @click="modifyPostsFun(scope.row)">{{postsLabelObj.editText}}</el-button>
+                        <el-button class="el-icon-check" v-if='scope.row.editJobName' type="text" @click="modifyApply(scope.row)">{{postsLabelObj.confirmText}}</el-button>
                     </el-col>
                 </el-row>
                 </template>
@@ -90,18 +90,23 @@
   </div>
 </template>
 <script>
+/* eslint-disable */
+import '@/utils/Underscore'
 // import { userGetAll } from '@/api/management'
 export default {
   name: 'table',
-  props: ['depId', 'depName'],
-  editJobName: '',
+  props: ['depId', 'depName'], 
   data() {
     return {
+      editJobName: false, // 标记是否存在有编辑的行
+      jobName: '', // 新增的职位名称
       dialogBindCfgForm: false, // 绑定部门配置form
       userCompany: '华为公司',
       postsLabelObj: {
         addBtnText: '添加',
         delBtnText: '删除',
+        editBtnText: '修改',
+        confirmText: '确认修改',
         titleTxt: '当前部门是：',
         depName: '部门',
         jobName: '职位名称',
@@ -176,6 +181,13 @@ export default {
     addPostsFun() {
       // 扩展代码
       alert('添加接口还没写，输入框输完就成功了，反正我也不新增');
+      if(this.editJobName || !this.jobName) return;
+      this.editJobName = true; // 证明在编辑状态
+      this.postsData.push({
+        depName: '',
+        editJobName: this.jobName,
+        jobName: this.jobName
+      })
     },
     bindPostsFun() {
       alert('可以多选几个职位绑定当前的部门。');
@@ -197,12 +209,19 @@ export default {
     modifyApply(records) {
       alert(`您修改的值我已经获取到了，是${records.editJobName},但是我接口没写，是不是很皮啊`);
       this.$set(records, 'editJobName', '')
+      this.editJobName = false; // 证明在编辑状态
     },
     openUserCfgWin() {
       // 扩展内容
     },
     submitUserForm() {
       this.dialogBindCfgForm = false;
+    },
+    delPostsFun() {
+      if(this.editJobName || this.postsData.length < 1) return;
+      const selectRows = this.$refs.multipleTable.store.states.selection;
+      // 使用Underscore.js中的方法删除数组
+      this.postsData = _.without(this.postsData, ...selectRows);
     }
   }
 }
