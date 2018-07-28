@@ -1,13 +1,9 @@
 <template>
   <div class="app-container">
-
     <!--查询按钮位置-->
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter"
-                style="width: 200px;"
-                class="filter-item" placeholder="请输入客户名称">
-      </el-input>
-      <el-select v-model="value" class="filter-item" placeholder="请选择客户所属区域">
+      公司：
+      <el-select v-model="options" multiple placeholder="请选择">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -15,10 +11,33 @@
           :value="item.value">
         </el-option>
       </el-select>
+      人员：
+      <el-select v-model="options" multiple placeholder="请选择">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      客户所属区域：
+      <el-select v-model="options" class="filter-item" placeholder="请选择客户所属区域">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      客户名称：
+      <el-input @keyup.enter.native="handleFilter"
+                style="width: 200px;"
+                class="filter-item" placeholder="请输入客户名称">
+      </el-input>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}
       </el-button>
     </div>
-
+    <!--基础表格-->
     <el-table :data="list" v-loading.body="listLoading"
               border fit highlight-current-row
               style="width: 100%"
@@ -82,17 +101,21 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="电话跟进" width="120"
+      <el-table-column align="center" label="电话跟进" width="150"
                        sortable  prop="phoneFollow_up">
         <template slot-scope="scope">
-          <span>{{scope.row.phoneFollow_up}}</span>
+          <!--电话跟进组件接口-->
+          <phone-lur :title="scope.row.customerName"
+                     :content="scope.row.phoneFollow_up"
+                     :data="scope.row"></phone-lur>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="拜访跟进" width="120"
+      <el-table-column align="center" label="拜访跟进" width="150"
                        sortable prop="visitFollow_up">
         <template slot-scope="scope">
           <span>{{scope.row.visitFollow_up}}</span>
+          <column-button text="录入" icon="el-icon-edit"></column-button>
         </template>
       </el-table-column>
 
@@ -122,12 +145,12 @@
 
       <el-table-column align="center" min-width="650px" label="操作">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="danger" size="small">加入理单</el-button>
-          <el-button plain size="small" icon="el-icon-edit-outline">添加跟进人</el-button>
-          <el-button plain size="small" icon="el-icon-edit-outline">转交</el-button>
-          <el-button plain size="small" icon="el-icon-edit">调整保护期</el-button>
-          <el-button type="danger" size="small">标记为不准确</el-button>
-          <el-button plain size="small" icon="el-icon-view">关注</el-button>
+          <column-button text="加入理单" @click="handleClick(scope.row)"></column-button>
+          <column-button type="primary" text="添加跟进人" icon="el-icon-edit-outline"></column-button>
+          <column-button type="primary" text="转交" icon="el-icon-edit-outline"></column-button>
+          <column-button type="primary" text="调整保护期" icon="el-icon-edit"></column-button>
+          <column-button text="标记为不准确" @click="handleClick(scope.row)"></column-button>
+          <column-button type="primary" text="关注" icon="el-icon-view"></column-button>
           <!--<el-button v-if="scope.row.edit" type="success" @click="confirmEdit(scope.row)" size="small" icon="el-icon-circle-check-outline">Ok</el-button>-->
           <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">加入理单</el-button>-->
           <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">添加跟进人</el-button>-->
@@ -139,21 +162,43 @@
       </el-table-column>
 
     </el-table>
-
+    <!--表格分页信息-->
     <div class="pagination-container">
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
+
+    <!--拜访跟进录入-->
+    <el-dialog
+      title="123"
+      :visible.sync="visitDialogVisible"
+      width="30%"
+      :before-close="phoneHandleClose">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="visitDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="visitDialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
   import { getAll } from '@/api/salesManagement'
-
+  // TODO 组件导入不能加{}
+  import phoneLur from './interface/phoneLur'
+  import columnButton from '@/components/Button/columnButton'
   export default {
+    components: {
+      phoneLur,
+      columnButton
+    },
     name: 'inlineEditTable',
     data() {
       return {
+        phoneDialogVisible: false,
+        visitDialogVisible: false,
         options: [{
           value: '北京',
           label: '北京'
@@ -197,6 +242,13 @@
       this.getList()
     },
     methods: {
+      phoneHandleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      },
       getList() {
         this.listLoading = true
         getAll(this.listQuery).then(response => {
