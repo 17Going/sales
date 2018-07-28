@@ -115,7 +115,6 @@
                        sortable prop="visitFollow_up">
         <template slot-scope="scope">
           <span>{{scope.row.visitFollow_up}}</span>
-          <column-button text="录入" icon="el-icon-edit"></column-button>
         </template>
       </el-table-column>
 
@@ -137,9 +136,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="业务指导" width="120">
+      <el-table-column align="center" label="业务指导" width="130">
         <template slot-scope="scope">
-          <span>{{scope.row.businessGuidance}}</span>
+          <!--业务指导接口-->
+          <guide-entry :content="scope.row.businessGuidance"
+                       :data="scope.row">
+          </guide-entry>
         </template>
       </el-table-column>
 
@@ -189,10 +191,12 @@
   // TODO 组件导入不能加{}
   import phoneLur from './interface/phoneLur'
   import columnButton from '@/components/Button/columnButton'
+  import guideEntry from './interface/guideEntry.vue'
   export default {
     components: {
       phoneLur,
-      columnButton
+      columnButton,
+      guideEntry
     },
     name: 'inlineEditTable',
     data() {
