@@ -147,12 +147,13 @@
 
       <el-table-column align="center" min-width="650px" label="操作">
         <template slot-scope="scope">
-          <column-button text="加入理单" @click="handleClick(scope.row)"></column-button>
-          <column-button type="primary" text="添加跟进人" icon="el-icon-edit-outline"></column-button>
-          <column-button type="primary" text="转交" icon="el-icon-edit-outline"></column-button>
-          <column-button type="primary" text="调整保护期" icon="el-icon-edit"></column-button>
-          <column-button text="标记为不准确" @click="handleClick(scope.row)"></column-button>
-          <column-button type="primary" text="关注" icon="el-icon-view"></column-button>
+          <button-arr :data="scope.row"></button-arr>
+          <!--<column-button text="加入理单" @click="handleClick(scope.row)"></column-button>-->
+          <!--<column-button type="primary" text="添加跟进人" icon="el-icon-edit-outline"></column-button>-->
+          <!--<column-button type="primary" text="转交" icon="el-icon-edit-outline"></column-button>-->
+          <!--<column-button type="primary" text="调整保护期" icon="el-icon-edit"></column-button>-->
+          <!--<column-button text="标记为不准确" @click="handleClick(scope.row)"></column-button>-->
+          <!--<column-button type="primary" text="关注" icon="el-icon-view"></column-button>-->
           <!--<el-button v-if="scope.row.edit" type="success" @click="confirmEdit(scope.row)" size="small" icon="el-icon-circle-check-outline">Ok</el-button>-->
           <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">加入理单</el-button>-->
           <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">添加跟进人</el-button>-->
@@ -192,11 +193,13 @@
   import phoneLur from './interface/phoneLur'
   import columnButton from '@/components/Button/columnButton'
   import guideEntry from './interface/guideEntry.vue'
+  import buttonArr from './interface/buttonArr.vue'
   export default {
     components: {
       phoneLur,
       columnButton,
-      guideEntry
+      guideEntry,
+      buttonArr
     },
     name: 'inlineEditTable',
     data() {
