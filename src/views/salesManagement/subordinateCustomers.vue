@@ -145,7 +145,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" min-width="650px" label="操作">
+      <el-table-column align="center" min-width="660px" label="操作">
         <template slot-scope="scope">
           <button-arr :data="scope.row"></button-arr>
           <!--<column-button text="加入理单" @click="handleClick(scope.row)"></column-button>-->
