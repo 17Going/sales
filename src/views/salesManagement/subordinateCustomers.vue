@@ -2,39 +2,12 @@
   <div class="app-container">
     <!--查询按钮位置-->
     <div class="filter-container">
-      公司：
-      <el-select v-model="options" multiple placeholder="请选择">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-      人员：
-      <el-select v-model="options" multiple placeholder="请选择">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-      客户所属区域：
-      <el-select v-model="options" class="filter-item" placeholder="请选择客户所属区域">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-      客户名称：
-      <el-input @keyup.enter.native="handleFilter"
-                style="width: 200px;"
-                class="filter-item" placeholder="请输入客户名称">
-      </el-input>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{$t('table.search')}}
+      <company-search></company-search>
+      <people-search></people-search>
+      <customer-region-search></customer-region-search>
+      <customer-people-search></customer-people-search>
+      <el-button style="margin-left: 12px" type="primary" icon="el-icon-search" @click="handleFilter">
+        {{$t('table.search')}}
       </el-button>
     </div>
     <!--基础表格-->
@@ -148,19 +121,6 @@
       <el-table-column align="center" min-width="660px" label="操作">
         <template slot-scope="scope">
           <button-arr :data="scope.row"></button-arr>
-          <!--<column-button text="加入理单" @click="handleClick(scope.row)"></column-button>-->
-          <!--<column-button type="primary" text="添加跟进人" icon="el-icon-edit-outline"></column-button>-->
-          <!--<column-button type="primary" text="转交" icon="el-icon-edit-outline"></column-button>-->
-          <!--<column-button type="primary" text="调整保护期" icon="el-icon-edit"></column-button>-->
-          <!--<column-button text="标记为不准确" @click="handleClick(scope.row)"></column-button>-->
-          <!--<column-button type="primary" text="关注" icon="el-icon-view"></column-button>-->
-          <!--<el-button v-if="scope.row.edit" type="success" @click="confirmEdit(scope.row)" size="small" icon="el-icon-circle-check-outline">Ok</el-button>-->
-          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">加入理单</el-button>-->
-          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">添加跟进人</el-button>-->
-          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">转交</el-button>-->
-          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">调整保护期</el-button>-->
-          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">标记为不准确</el-button>-->
-          <!--<el-button v-else type="primary" @click='scope.row.edit=!scope.row.edit' size="small" icon="el-icon-edit">关注</el-button>-->
         </template>
       </el-table-column>
 
@@ -170,20 +130,6 @@
       <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
-
-    <!--拜访跟进录入-->
-    <el-dialog
-      title="123"
-      :visible.sync="visitDialogVisible"
-      width="30%"
-      :before-close="phoneHandleClose">
-      <span>这是一段信息</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="visitDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="visitDialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
-
   </div>
 </template>
 
@@ -194,35 +140,25 @@
   import columnButton from '@/components/Button/columnButton'
   import guideEntry from './interface/guideEntry.vue'
   import buttonArr from './interface/buttonArr.vue'
+  import companySearch from './interface/companySearch.vue'
+  import peopleSearch from './interface/peopleSearch.vue'
+  import customerRegionSearch from './interface/customerRegionSearch.vue'
+  import customerPeopleSearch from './interface/customerPeopleSearch.vue'
   export default {
     components: {
       phoneLur,
       columnButton,
       guideEntry,
-      buttonArr
+      buttonArr,
+      companySearch,
+      peopleSearch,
+      customerRegionSearch,
+      customerPeopleSearch
     },
     name: 'inlineEditTable',
     data() {
       return {
-        phoneDialogVisible: false,
-        visitDialogVisible: false,
-        options: [{
-          value: '北京',
-          label: '北京'
-        }, {
-          value: '安徽',
-          label: '安徽'
-        }, {
-          value: '上海',
-          label: '上海'
-        }, {
-          value: '河南',
-          label: '河南'
-        }, {
-          value: '四川',
-          label: '四川'
-        }],
-        value: '',
+        customerPeopleSearchVal: '',
         tableKey: 0,
         list: null,
         total: null,
